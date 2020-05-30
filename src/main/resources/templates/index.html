@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Spring Security Example</title>
+</head>
+<body>
+<h1>Welcome!</h1>
+
+<p>Click <a th:href="@{/start}">here</a> to see a greeting.</p>
+
+<p>Loaded profiles:</p>
+<ul>
+    <li th:if="${#arrays.contains(@environment.getActiveProfiles(),'SERVER')}">
+        server
+    </li>
+    <li th:if="${#arrays.contains(@environment.getActiveProfiles(),'LOCAL')}">
+        local
+    </li>
+    <li th:if="${#arrays.contains(@environment.getActiveProfiles(),'DEV')}">
+        dev
+    </li>
+    <li th:if="${#arrays.contains(@environment.getActiveProfiles(),'PRO')}">
+        pro
+    </li>
+</ul>
+</body>
+</html>
