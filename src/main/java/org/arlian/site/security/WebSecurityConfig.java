@@ -12,7 +12,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-        String[] unsecuredUrls = {"/", "index", "/index"};
+        String[] unsecuredUrls = {
+                "/", "index", "/index",
+                "/adminLTE/**",
+                "/img/**", "/favicon/**"
+        };
 
         httpSecurity
                 .authorizeRequests()

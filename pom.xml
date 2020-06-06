@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>org.arlian</groupId>
 	<artifactId>site</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2020.01.00-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>arlian</name>
 	<description>The arlian.org site</description>

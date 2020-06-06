@@ -1,13 +1,16 @@
 package org.arlian.site.model.user;
 
+import org.arlian.site.model.start.page.Page;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class User implements UserIdProjection{
+
     /**
      * Short name the user likes to be called by.
      */
@@ -35,7 +38,7 @@ public class User implements UserIdProjection{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
     @SequenceGenerator(name="user_id_seq",
             sequenceName = "user_id_seq", allocationSize = 5)
-    private int id;
+    private long id;
 
     /**
      * LocalDateTime of when the object was first persisted.
@@ -48,6 +51,15 @@ public class User implements UserIdProjection{
      */
     @UpdateTimestamp
     private LocalDateTime updateDateTime;
+
+
+    /********************
+     * RELATED ENTITIES *
+     ********************/
+
+    @OneToMany(mappedBy = "user")
+    private List<Page> pages;
+
 
 
     /****************
@@ -68,7 +80,7 @@ public class User implements UserIdProjection{
      * GETTERS AND SETTERS *
      ***********************/
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

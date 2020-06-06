@@ -1,27 +1,50 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Spring Security Example</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Arlian | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/adminLTE/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/adminLTE/dist/css/adminlte.min.css}">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
-<body>
-<h1>Welcome!</h1>
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <a href="#"><b>Arlian</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">This site is intended for private use by the Arlian community.
+            If you have been invited or wish to become a member of this community, use the button below.</p>
 
-<p>Click <a th:href="@{/start}">here</a> to see a greeting.</p>
+            <div class="social-auth-links text-center mb-3 info-box">
+                <a th:href="@{/start}" class="btn btn-block">
+                    <img th:src="@{/img/btn_google_dark_normal_ios.svg}"
+                         style="margin-right:10px;margin-top:3px;" /> Sign in or register using Google
+                </a>
+            </div>
+            <!-- /.social-auth-links -->
 
-<p>Loaded profiles:</p>
-<ul>
-    <li th:if="${#arrays.contains(@environment.getActiveProfiles(),'SERVER')}">
-        server
-    </li>
-    <li th:if="${#arrays.contains(@environment.getActiveProfiles(),'LOCAL')}">
-        local
-    </li>
-    <li th:if="${#arrays.contains(@environment.getActiveProfiles(),'DEV')}">
-        dev
-    </li>
-    <li th:if="${#arrays.contains(@environment.getActiveProfiles(),'PRO')}">
-        pro
-    </li>
-</ul>
+        </div>
+        <!-- /.login-card-body -->
+    </div>
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script th:src="@{/adminLTE/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:href="@{/adminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:href="@{/adminLTE/dist/js/adminlte.min.js}"></script>
+
 </body>
 </html>
