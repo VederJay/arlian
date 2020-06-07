@@ -1,13 +1,17 @@
 package org.arlian.site.model.start.page;
 
+import org.arlian.site.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface PageRepository extends JpaRepository<Page, Long> {
 
-    @Query("SELECT p FROM Page p WHERE p.user.id = ?1")
-    PageNameProjection findDefaultNameByUserId(long userId);
+    @Query("SELECT p FROM Page p WHERE p.user = ?1 and p.isDefault = true")
+    PageNameProjection findDefaultNameByUser(User user);
 
-    @Query("SELECT p FROM Page p WHERE p.user.id = ?1 and p.name = ?2")
-    Page findByUserIdAndName(long userId, String pageName);
+    Page findByUserAndName(User user, String pageName);
+
+    List<PageNameProjection> findByUser(User user);
 }

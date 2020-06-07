@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:fragment="layout(content, currentPageName, menu, pageNames, footer)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Arlian | Start</title>
+
+    <!-- Favicon - Edge takes only the first one -->
+    <link rel="icon" th:href="@{/favicon/favicon.ico}">
+    <link rel="shortcut icon" th:href="@{favicon/favicon.ico}">
+    <!-- Alternative icons -->
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/favicon/apple-touch-icon.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon/favicon-32x32.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon/favicon-16x16.png}">
+    <link rel="mask-icon" href="/static/safari-pinned-tab.svg" th:href="@{/favicon/safari-pinned-tab.svg}" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" th:href="@{/adminLTE/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/adminLTE/dist/css/adminlte.min.css}">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <!-- CSRF protection -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body class="hold-transition layout-top-nav">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+        <div class="container">
+            <a href="#" class="navbar-brand">
+                <img th:src="@{/favicon/android-icon-96x96.png}" alt="Arlian Logo"
+                     class="brand-image img-circle elevation-3"
+                     style="opacity: .8">
+                <span class="brand-text font-weight-light">Arlian</span>
+            </a>
+
+            <button class="navbar-toggler order-1" type="button" data-toggle="collapse"
+                    data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+                <!-- Left navbar links -->
+                <ul class="navbar-nav">
+                    <li class="nav-item" th:if="${menu} == 'view'">
+                        <a th:href="'../edit/'+${currentPageName}" class="nav-link">Edit</a>
+                    </li>
+                    <li class="nav-item" th:if="${menu} == 'edit'">
+                        <a th:href="'../view/'+${currentPageName}" class="nav-link">View</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                           class="nav-link dropdown-toggle">Switch pages</a>
+                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                            <li th:each="pageName : ${pageNames}">
+                                <a th:href="${pageName}" th:text="${pageName}" class="dropdown-item">name of page</a>
+                            </li>
+                            <li><a href="#" class="dropdown-item">Create additional page</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- /.navbar -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark"> Your page <span style="font-style: italic" th:text="${currentPageName}"></span></h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item">Start</li>
+                            <li class="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item active" th:text="${currentPageName}">pageName</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <div class="content" th:replace="${content}">
+
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <!-- Main Footer -->
+    <footer class="main-footer">
+        <!-- To the right -->
+        <div class="float-right d-none d-sm-inline">
+            Your start
+        </div>
+        <!-- Default to the left -->
+        <strong>Arlian</strong>
+    </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+<!-- jQuery -->
+<script th:src="@{/adminLTE/plugins/jquery/jquery.min.js}"></script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/adminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/adminLTE/dist/js/adminlte.min.js}"></script>
+<!-- Load after main scripts -->
+<th:block th:include="${footer}"/>
+</body>
+</html>

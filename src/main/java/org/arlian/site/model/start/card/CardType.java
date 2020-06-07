@@ -10,7 +10,8 @@ public enum CardType {
      */
 
     TEXT_LINKS(0),
-    ICON_LINKS(100);
+    IMAGE_LINKS(100),
+    PICTURES(200);
 
 
     /*

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -51,7 +52,8 @@ public class StartController {
 
         // Get name of default page
         UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
-        PageNameProjection pageNameProjection = pageRepository.findDefaultNameByUserId(userIdProjection.getId());
+        User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
+        PageNameProjection pageNameProjection = pageRepository.findDefaultNameByUser(proxyUser);
         String pageName = "";
 
         // Create default page on first login
@@ -80,15 +82,22 @@ public class StartController {
     @GetMapping("/view/{pageName}")
     public String view(Model model, Authentication authentication, @PathVariable String pageName){
 
-        // Get page
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
-        Page page = pageRepository.findByUserIdAndName(userIdProjection.getId(), pageName);
+        // Enrich model with page related attributes
+        Page page = enrichModel(authentication, model, pageName);
 
         // If the page name doesn't exist for the user, redirect to 404
         if(page == null){
             // TODO make 404 page for start
             return "redirect:/404";
         }
+
+        return "pages/start/view";
+    }
+
+    private Page enrichModel(Authentication authentication, Model model, String pageName) {
+        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
+        Page page = pageRepository.findByUserAndName(proxyUser, pageName);
 
         // Get the cards with links
         List<Card> leftColumnCards = cardRepository.findByPageAndPositionOrderByOrderNumber(page, 0);
@@ -101,15 +110,20 @@ public class StartController {
         model.addAttribute("middleColumnCards", middleColumnCards);
         model.addAttribute("rightColumnCards", rightColumnCards);
 
-        return "pages/start/view";
+        // Add list of page names to the model
+        List<PageNameProjection> pageNameProjections = pageRepository.findByUser(proxyUser);
+        List<String> pageNames = new ArrayList<>();
+        pageNameProjections.forEach(projection -> pageNames.add(projection.getName()));
+        model.addAttribute("pageNames", pageNames);
+
+        return page;
     }
 
     @GetMapping("/edit/{pageName}")
     public String edit(Model model, Authentication authentication, @PathVariable String pageName){
 
-        // Get page
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
-        Page page = pageRepository.findByUserIdAndName(userIdProjection.getId(), pageName);
+        // Enrich model with page related attributes
+        Page page = enrichModel(authentication, model, pageName);
 
         // If the page name doesn't exist for the user, redirect to 404
         if(page == null){
@@ -117,18 +131,7 @@ public class StartController {
             return "redirect:/404";
         }
 
-        // Get the cards with links
-        List<Card> leftColumnCards = cardRepository.findByPageAndPositionOrderByOrderNumber(page, 0);
-        List<Card> middleColumnCards = cardRepository.findByPageAndPositionOrderByOrderNumber(page, 1);
-        List<Card> rightColumnCards = cardRepository.findByPageAndPositionOrderByOrderNumber(page, 2);
-
-        // Add the attributes to the model
-        model.addAttribute("pageName", page.getName());
-        model.addAttribute("leftColumnCards", leftColumnCards);
-        model.addAttribute("middleColumnCards", middleColumnCards);
-        model.addAttribute("rightColumnCards", rightColumnCards);
-
-        // TODO create an edit page, maybe start using the layout
-        return "pages/start/view";
+        // TODO create an edit page: add modal for links and let both modals work
+        return "pages/start/edit";
     }
 }

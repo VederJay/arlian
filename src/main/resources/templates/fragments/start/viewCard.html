@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<body>
+<div th:fragment="card(card)" class="card">
+    <div class="card-header">
+        <h5 class="card-title m-0" th:text="${card.getTitle()}">card title</h5>
+    </div>
+    <div class="card-body">
+        <p class="card-text">
+        <ul class="list-unstyled">
+            <li th:each="link : ${card.getLinks()}">
+                <a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a>
+            </li>
+        </ul>
+        </p>
+    </div>
+</div>
+</body>
+</html>
