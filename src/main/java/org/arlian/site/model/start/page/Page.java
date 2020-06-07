@@ -1,11 +1,14 @@
 package org.arlian.site.model.start.page;
 
+import org.arlian.site.model.start.card.Card;
 import org.arlian.site.model.user.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Page {
@@ -55,6 +58,12 @@ public class Page {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    /**
+     * Cards to be displayed on the page.
+     */
+    @OneToMany(mappedBy = "page", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Card> cards = new ArrayList<>();
+
 
     /****************
      * CONSTRUCTORS *
@@ -67,6 +76,7 @@ public class Page {
         this.isDefault = isDefault;
         this.user = user;
     }
+
 
 
     /***********************
@@ -95,5 +105,18 @@ public class Page {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void addCard(Card card) {
+        this.cards.add(card);
+        card.setPage(this);
+    }
+
+    public void removeCard(Card card){
+        this.cards.remove(card);
     }
 }

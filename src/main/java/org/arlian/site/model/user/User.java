@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -57,8 +58,8 @@ public class User implements UserIdProjection{
      * RELATED ENTITIES *
      ********************/
 
-    @OneToMany(mappedBy = "user")
-    private List<Page> pages;
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Page> pages = new ArrayList<>();
 
 
 
@@ -114,5 +115,18 @@ public class User implements UserIdProjection{
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+    public List<Page> getPages() {
+        return pages;
+    }
+
+    public void addPage(Page page){
+        this.pages.add(page);
+        page.setUser(this);
+    }
+
+    public void removePage(Page page){
+        this.pages.remove(page);
     }
 }
