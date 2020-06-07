@@ -34,14 +34,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form role="form">
-                    <input type="hidden" id="cardId">
+                <form role="form" method="post" id="cardForm">
+                    <input type="hidden" name="cardId" id="cardId">
+                    <input type="hidden" name="_csrf" th:content="${_csrf.token}"/>
+                    <input type="hidden" name="_csrf_header" th:content="${_csrf.headerName}"/>
                     <div class="row">
                         <div class="col-sm-12">
                             <!-- text input -->
                             <div class="form-group">
                                 <label>Card title</label>
-                                <input type="text" class="form-control" id="cardTitle">
+                                <input type="text" class="form-control" id="cardTitle" name="cardTitle">
                             </div>
                         </div>
                     </div>
@@ -51,10 +53,9 @@
                             <!-- select -->
                             <div class="form-group">
                                 <label>Type of card</label>
-                                <select class="form-control">
-                                    <option>Textual links</option>
-                                    <option>Image links</option>
-                                    <option>Pictures</option>
+                                <select class="form-control" name="cardType">
+                                    <option value="TEXT_LINKS">Textual links</option>
+                                    <option value="IMAGE_LINKS">Image links</option>
                                 </select>
                             </div>
                         </div>
@@ -64,7 +65,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary" onClick="$('#cardForm').submit();">Save changes</button>
             </div>
         </div>
     </div>
@@ -78,9 +79,7 @@
 
         // Update the card edit modal with values from the clicked button
         $('#cardEditModal').on('show.bs.modal', function (event) {
-            console.log("method called");
             let button = $(event.relatedTarget);
-            console.log("button title: " + button.data('title'));
             let modal = $(this);
             modal.find('#cardTitle').val(button.data('title'));
             modal.find('#cardId').val(button.data('id'));

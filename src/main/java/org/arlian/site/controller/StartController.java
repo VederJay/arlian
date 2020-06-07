@@ -3,6 +3,7 @@ package org.arlian.site.controller;
 import org.arlian.site.UserService;
 import org.arlian.site.model.start.card.Card;
 import org.arlian.site.model.start.card.CardRepository;
+import org.arlian.site.model.start.card.CardType;
 import org.arlian.site.model.start.page.Page;
 import org.arlian.site.model.start.page.PageNameProjection;
 import org.arlian.site.model.start.page.PageRepository;
@@ -12,9 +13,7 @@ import org.arlian.site.service.PageService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.persistence.EntityManager;
@@ -131,7 +130,17 @@ public class StartController {
             return "redirect:/404";
         }
 
-        // TODO create an edit page: add modal for links and let both modals work
+        // TODO create an edit page: add modal for links and let both modals work - solve the 403 error
+        // and check the cardType being set correctly in the modal
+        return "pages/start/edit";
+    }
+
+    @PostMapping("/edit/{pageName}")
+    public String update(Model model, Authentication authentication, @PathVariable String pageName,
+                         @RequestParam("cardId") long cardId, @RequestParam("cardTitle") String cardTitle,
+                         @RequestParam("cardType") CardType cardType){
+
+
         return "pages/start/edit";
     }
 }
