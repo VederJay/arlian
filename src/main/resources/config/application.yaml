@@ -1,0 +1,59 @@
+spring:
+
+  # Web, caching, cookies, etc
+  thymeleaf:
+    mode: HTML
+  resources:
+    cache:
+      period: 2592000s
+
+  # Hibernate
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+
+    # JPA / Hibernate
+    # Don't allow opening new transactions in the view. Work properly (use a DAO or Service from the Controller).
+    open-in-view: false
+
+  datasource:
+    # Hikari
+    hikari:
+      maximum-pool-size: 4
+      connection-timeout: 60000
+
+    # Connection
+    url: jdbc:postgresql://192.168.1.100:5432/arlian
+    username: user
+    password: password
+
+
+  # JMX
+  jmx:
+    enabled: true
+
+  # request sizes, e.g. for uploading pictures
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 731142352505-lbrn4va4810s59ogrtptkvtbcjabpkcm.apps.googleusercontent.com
+            client-secret: BO42uXc447rcDLl4_fbWd4Yd
+
+logging:
+  file:
+    max-history: 20
+    max-size: 20MB
