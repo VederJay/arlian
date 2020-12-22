@@ -15,7 +15,7 @@ You can then run the application either from IntelliJ or in a local docker.
 
 ### Running in IntelliJ
 
-Use the provided run configuration _SiteApplication_. In it, you will find environment variables
+Use the provided run configuration _IntelliJ run_. In it, you will find environment variables
 for the datasource, i.e. the database:
 - `spring.datasource.username=user`
 - `spring.datasource.password=password`
@@ -27,7 +27,7 @@ them here.
 
 ### Running in a local docker
 
-Use the provided run configuration _run docker_. In it, you will find environment variables
+Use the provided run configuration _Docker run_. In it, you will find environment variables
 for the datasource, i.e. the database:
 - `spring.datasource.username=user`
 - `spring.datasource.password=password`
