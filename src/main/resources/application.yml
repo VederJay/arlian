@@ -50,15 +50,6 @@ spring:
     baseline-version: 0.1.0
     schemas: arlian_org
 
-  # OAuth
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 731142352505-lbrn4va4810s59ogrtptkvtbcjabpkcm.apps.googleusercontent.com
-            client-secret: BO42uXc447rcDLl4_fbWd4Yd
-
   # Caching
   web:
     resources:

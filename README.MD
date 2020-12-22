@@ -2,18 +2,24 @@
 The purpose of this project is creating a site with a number of specialized 
 functions.
 
+# Prerequisites
+ ## PostgreSQL
+ You'll need a PostgreSQL database for this application. You can e.g. quickly spin 
+ one up in a local docker:
+ 
+ `docker run --name postgres_arlian -e POSTGRES_PASSWORD=password -e POSTGRES_USER=user -e POSTGRES_DB=db_arlian_org -p 5432:5432 -d postgres`
+ 
+ ## OAuth
+ 
+ You'll need a client-id and client-secret from Google for use of the OAuth2 authentication.
+ Provide them as environment variables:
+ - `spring.security.oauth2.client.registration.google.client-id=....apps.googleusercontent.com`
+ - `spring.security.oauth2.client.registration.google.client-secret=...`
 
-## Getting development started
 
-### Prerequisites
-Provide a connection to a PostgreSQL database, e.g. through a local docker:
+# Getting development started
 
-`docker run --name postgres_arlian -e POSTGRES_PASSWORD=password -e POSTGRES_USER=user -e POSTGRES_DB=db_arlian_org -p 5432:5432 -d postgres`
-
-You can then run the application either from IntelliJ or in a local docker. 
-
-
-### Running in IntelliJ
+## Running in IntelliJ
 
 Use the provided run configuration _IntelliJ run_. In it, you will find environment variables
 for the datasource, i.e. the database:
@@ -25,7 +31,7 @@ If you change the environment variables given to the postgres docker, you'll als
 them here.
 
 
-### Running in a local docker
+## Running in a local docker
 
 Use the provided run configuration _Docker run_. In it, you will find environment variables
 for the datasource, i.e. the database:
@@ -41,7 +47,7 @@ more than a call to the program `docker` with arguments `rm --force arlian_edge`
 the previous container is removed before creating it anew. 
 
 
-## Running in production
+# Running in production
 The application is designed to be run as a docker. It may be possible to run it in other ways, e.g. 
 deployed to a stand-alone TomCat or JBoss EAP or something similar, but that hasn't been tested.
 

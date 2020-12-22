@@ -8,6 +8,8 @@
       <env name="spring.datasource.username" value="user" />
       <env name="spring.datasource.password" value="password" />
       <env name="spring.datasource.url" value="jdbc:postgresql://localhost:5432/db_arlian_org" />
+      <env name="spring.security.oauth2.client.registration.google.client-id" value="731142352505-lbrn4va4810s59ogrtptkvtbcjabpkcm.apps.googleusercontent.com" />
+      <env name="spring.security.oauth2.client.registration.google.client-secret" value="BO42uXc447rcDLl4_fbWd4Yd" />
     </envs>
     <method v="2">
       <option name="Make" enabled="true" />

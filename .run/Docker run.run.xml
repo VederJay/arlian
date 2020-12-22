@@ -20,6 +20,14 @@
               <option name="name" value="spring.datasource.url" />
               <option name="value" value="jdbc:postgresql://host.docker.internal:5432/db_arlian_org" />
             </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="spring.security.oauth2.client.registration.google.client-id" />
+              <option name="value" value="731142352505-lbrn4va4810s59ogrtptkvtbcjabpkcm.apps.googleusercontent.com" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="spring.security.oauth2.client.registration.google.client-secret" />
+              <option name="value" value="BO42uXc447rcDLl4_fbWd4Yd" />
+            </DockerEnvVarImpl>
           </list>
         </option>
         <option name="commandLineOptions" value="" />
