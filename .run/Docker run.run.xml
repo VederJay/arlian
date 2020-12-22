@@ -2,7 +2,7 @@
   <configuration default="false" name="Docker run" type="docker-deploy" factoryName="docker-image" server-name="Docker">
     <deployment type="docker-image">
       <settings>
-        <option name="imageTag" value="site:0.0.1-SNAPSHOT" />
+        <option name="imageTag" value="site:0.2.0-SNAPSHOT" />
         <option name="command" value="" />
         <option name="containerName" value="arlian_edge" />
         <option name="entrypoint" value="" />
