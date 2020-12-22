@@ -1,0 +1,22 @@
+spring:
+
+  # Uncomment the following for testing with H2 -->
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        default_schema:
+
+  datasource:
+
+    # Connection
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: sa
+
+  flyway:
+    enabled: false
+  # <-- uncomment the above for testing with H2
