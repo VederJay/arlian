@@ -1,4 +1,4 @@
-package org.arlian.site;
+package org.arlian.site.service;
 
 import org.arlian.site.model.user.User;
 import org.arlian.site.model.user.UserIdProjection;

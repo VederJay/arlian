@@ -1,6 +1,6 @@
 package org.arlian.site.controller;
 
-import org.arlian.site.UserService;
+import org.arlian.site.service.UserService;
 import org.arlian.site.model.start.card.Card;
 import org.arlian.site.model.start.card.CardRepository;
 import org.arlian.site.model.start.card.CardType;
