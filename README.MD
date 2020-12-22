@@ -59,6 +59,7 @@ need to set up stronger credentials.
 
 
 ## Running on Unraid
-You'll need to have an account on DockerHub. Push your local docker image there:
-- `docker tag site:0.2.0-SNAPSHOT vederjay/arlian:0.2.0-SNAPSHOT`
-- `docker push vederjay/arlian:0.2.0-SNAPSHOT`
+You'll need to have an account on DockerHub. Push your local docker image there (replace _vederjay/arlian_ by your 
+own repo name on DockerHub):
+- `docker tag site:0.2.0-SNAPSHOT vederjay/arlian:latest`
+- `docker push vederjay/arlian:latest`
