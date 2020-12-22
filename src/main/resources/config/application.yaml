@@ -1,11 +1,8 @@
 spring:
 
-  # Web, caching, cookies, etc
+  # Web
   thymeleaf:
     mode: HTML
-  resources:
-    cache:
-      period: 2592000s
 
   # Hibernate
   jpa:
@@ -25,7 +22,7 @@ spring:
     # Hikari
     hikari:
       maximum-pool-size: 4
-      connection-timeout: 60000
+      connection-timeout: 30000
 
     # Connection
     url: jdbc:postgresql://192.168.1.100:5432/arlian
@@ -44,7 +41,6 @@ spring:
       max-request-size: 20MB
 
 
-
   security:
     oauth2:
       client:
@@ -53,7 +49,8 @@ spring:
             client-id: 731142352505-lbrn4va4810s59ogrtptkvtbcjabpkcm.apps.googleusercontent.com
             client-secret: BO42uXc447rcDLl4_fbWd4Yd
 
-logging:
-  file:
-    max-history: 20
-    max-size: 20MB
+  # Caching
+  web:
+    resources:
+      cache:
+        period: 2592000s
