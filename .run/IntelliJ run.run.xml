@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="IntelliJ run" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="arlian" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.arlian.site.SiteApplication" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="adopt-openjdk-11" />
+    <envs>
+      <env name="spring.datasource.username" value="user" />
+      <env name="spring.datasource.password" value="password" />
+      <env name="spring.datasource.url" value="jdbc:postgresql://localhost:5432/db_arlian_org" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
