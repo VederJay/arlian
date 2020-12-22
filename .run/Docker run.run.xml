@@ -1,0 +1,32 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Docker run" type="docker-deploy" factoryName="docker-image" server-name="Docker">
+    <deployment type="docker-image">
+      <settings>
+        <option name="imageTag" value="site:0.0.1-SNAPSHOT" />
+        <option name="command" value="" />
+        <option name="containerName" value="arlian_edge" />
+        <option name="entrypoint" value="" />
+        <option name="envVars">
+          <list>
+            <DockerEnvVarImpl>
+              <option name="name" value="spring.datasource.username" />
+              <option name="value" value="user" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="spring.datasource.password" />
+              <option name="value" value="password" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="spring.datasource.url" />
+              <option name="value" value="jdbc:postgresql://host.docker.internal:5432/db_arlian_org" />
+            </DockerEnvVarImpl>
+          </list>
+        </option>
+        <option name="commandLineOptions" value="" />
+      </settings>
+    </deployment>
+    <method v="2">
+      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_docker rm" />
+    </method>
+  </configuration>
+</component>
