@@ -12,6 +12,7 @@ RUN cp target/*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM openjdk:16-jdk-alpine
+ENV SPRING_PROFILES_ACTIVE=deployed
 WORKDIR application
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/snapshot-dependencies/ ./

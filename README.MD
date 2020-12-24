@@ -68,19 +68,67 @@ Add a number of _Before launch_ items, in this order:
 deployment, but of course you'll have run the tests beforehand.
 
 
+
 # Running in production
+
 The application is designed to be run as a docker. It may be possible to run it in other ways, e.g. 
 deployed to a stand-alone TomCat or JBoss EAP or something similar, but that hasn't been tested.
 
-The steps to take are identical to those for running in a local docker, except of course that you'll
-need to set up stronger credentials, and it would be advisable to use the docker from the master git branch.
+## Pushing the docker image
 
-
-## Running on Unraid
 You'll need to have an account on DockerHub. Push your docker image there (replace _vederjay/arlian_ by your 
 own repo name on DockerHub), e.g. after creating the docker image locally:
 - `docker tag site:0.2.0-SNAPSHOT vederjay/arlian:latest`
 - `docker push vederjay/arlian:latest`
 
-Alternatively, you can set up DockerHub to automatically pull your code from GitHub and use a Dockerfile to 
-build the image - this is the case for the vederjay/arlian DockerHub image.
+Alternatively (and better), you can set up DockerHub to automatically pull your code from GitHub and 
+use a Dockerfile to build the image - this is the case for the vederjay/arlian DockerHub image.
+
+
+## Running on Unraid
+
+### Prerequisites
+- run a PostgreSQL docker
+- run a NginxProxyManager docker
+
+Forward your WAN ports 80 and 443 to the NginxProxyManager docker ports on the host.
+
+
+### Preparing arlian docker
+
+Prepare the arlian docker from DockerHub. It will need the environment variables as mentioned before:
+ - `spring.datasource.username`
+ - `spring.datasource.password`
+ - `spring.datasource.url`
+ - `spring.security.oauth2.client.registration.google.client-id`
+ - `spring.security.oauth2.client.registration.google.client-secret`
+ 
+You'll need to fill these in according to your deployment, i.e. with the user and password you set up in the 
+ PostgreSQL docker, and with the url pointing to its IP on Unraid, e.g.: 
+ - `jdbc:postgresql://192.168.0.100:5432/db_arlian_org`
+ 
+For the oauth variables, you'll need to check your configuration at Google.
+
+There's also an additional environment variable to set. This variable should be set to the IP of the NginxProxyManager
+docker:
+- `server.tomcat.remoteip.internal-proxies`
+
+ 
+Also set up a port binding for the arlian docker. The web server in the docker container will be running on port 8080. 
+So bind port 8080 to a free port on your deployment, e.g. 8680. Then set up your domain in the NginxProxyManager docker
+as a proxy host and point it to the port you chose. Make sure you set up your domain as https, that way you can let the 
+NginxProxyManager do the heavy lifting on all https-related stuff. Make sure you've forwarded your WAN http and https 
+ ports to the NginxProxyManager docker. Once this is done, you can do the Let's Encrypt request.
+
+Additionally, you need to add the following special configuration for the Nginx proxy (assuming your arlian docker is 
+running on 192.168.0.100 and its port 8080 is bound to 8680) so as to let the OAuth login work properly:
+
+```
+location / { 
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header Host $host;
+        proxy_pass http://192.168.0.100:8680/;
+    }
+```
