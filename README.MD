@@ -122,15 +122,13 @@ NginxProxyManager do the heavy lifting on all https-related stuff. Make sure you
 
 Additionally, you need to add the following special configuration for the Nginx proxy (assuming your arlian docker is 
 running on 192.168.0.100 and its port 8080 is bound to 8680) so as to let the OAuth login work properly:
-(see https://vkuzel.com/configuration-of-a-nginx-reverse-proxy-in-front-of-a-spring-boot-2-1-application-protected-by-oauth-2-0 
-for more info)
 
 ```
 location / { 
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Port $server_port;
-        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Port 443;
+        proxy_set_header Host arlian.solutions;
         proxy_pass http://192.168.0.100:8680/;
     }
 ```
