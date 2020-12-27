@@ -34,10 +34,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form role="form" method="post" id="cardForm">
+                <form role="form" method="post" id="cardForm" action="/start/card/update">
                     <input type="hidden" name="cardId" id="cardId">
-                    <input type="hidden" name="_csrf" th:content="${_csrf.token}"/>
-                    <input type="hidden" name="_csrf_header" th:content="${_csrf.headerName}"/>
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}"/>
                     <div class="row">
                         <div class="col-sm-12">
                             <!-- text input -->

@@ -1,7 +1,11 @@
 package org.arlian.site.model.start.card;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.arlian.site.model.start.link.Link;
 import org.arlian.site.model.start.page.Page;
+import org.arlian.site.model.user.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -10,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity @Getter @Setter @NoArgsConstructor
 public class Card {
 
     /**
@@ -67,69 +71,16 @@ public class Card {
     @OrderBy("orderNumber ASC")
     private List<Link> links = new ArrayList<>();
 
-
-    /****************
-     * CONSTRUCTORS *
-     ****************/
-
-    public Card(){}
-
-    public Card(String title) {
-        this.title = title;
-    }
+    /**
+     * The user to which this card belongs.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
 
     /***********************
      * GETTERS AND SETTERS *
      ***********************/
-
-    public long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public CardType getType() {
-        return type;
-    }
-
-    public void setType(CardType type) {
-        this.type = type;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public int getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(int orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-    public Page getPage() {
-        return page;
-    }
-
-    public void setPage(Page page) {
-        this.page = page;
-    }
-
-    public List<Link> getLinks() {
-        return links;
-    }
 
     public void addLink(Link link){
         this.links.add(link);

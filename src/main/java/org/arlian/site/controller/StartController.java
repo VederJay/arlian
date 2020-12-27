@@ -1,5 +1,6 @@
 package org.arlian.site.controller;
 
+import org.arlian.site.model.BadRequestException;
 import org.arlian.site.service.UserService;
 import org.arlian.site.model.start.card.Card;
 import org.arlian.site.model.start.card.CardRepository;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/start")
@@ -46,60 +48,138 @@ public class StartController {
         this.entityManager = entityManager;
     }
 
+
     @GetMapping({"", "/"})
     public RedirectView redirectStart(Authentication authentication){
 
         // Get name of default page
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
-        User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
-        PageNameProjection pageNameProjection = pageRepository.findDefaultNameByUser(proxyUser);
-        String pageName = "";
+        String pageName = pageService.getDefaultPageName(authentication);
 
-        // Create default page on first login
-        if(pageNameProjection == null){
-
-            // Get User proxy
-            User userProxy = entityManager.getReference(User.class, userIdProjection.getId());
-
-            // Create default page
-            Page page = pageService.createNewPage(userProxy, "home");
-            page.setDefault(true);
-            pageRepository.save(page);
-
-            // Get the name of the page
-            pageName = page.getName();
-        }
-
-        // Use name of default page
-        else
-            pageName = pageNameProjection.getName();
-
-        // Redirect to url with page name
+        // Redirect to url with default page name
         return new RedirectView("/start/view/"+pageName);
     }
+
 
     @GetMapping("/view/{pageName}")
     public String view(Model model, Authentication authentication, @PathVariable String pageName){
 
-        // Enrich model with page related attributes
-        Page page = enrichModel(authentication, model, pageName);
+        Optional<Page> optionalPage = pageService.getOptionalForPage(authentication, pageName);
 
-        // If the page name doesn't exist for the user, redirect to 404
-        if(page == null){
+        if(optionalPage.isEmpty())
             return "redirect:/404";
-        }
+
+        Page page = optionalPage.get();
+
+        addCardsToModel(model, authentication, page);
+        addOtherPageNamesToModel(model, authentication, page);
 
         return "pages/start/view";
     }
 
-    private Page enrichModel(Authentication authentication, Model model, String pageName) {
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
-        User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
-        Page page = pageRepository.findByUserAndName(proxyUser, pageName);
 
-        // If the page doesn't exist, return null
-        if(page == null)
-            return null;
+    @GetMapping("/edit/{pageName}")
+    public String edit(Model model, Authentication authentication, @PathVariable String pageName){
+
+        Optional<Page> optionalPage = pageService.getOptionalForPage(authentication, pageName);
+
+        if(optionalPage.isEmpty())
+            return "redirect:/404";
+
+        Page page = optionalPage.get();
+
+        addCardsToModel(model, authentication, page);
+        addOtherPageNamesToModel(model, authentication, page);
+
+        return "pages/start/edit";
+    }
+
+    @PostMapping("/card/add")
+    public String addCard(Model model, Authentication authentication, @RequestParam String pageName,
+                         @RequestParam("cardId") long cardId, @RequestParam("cardTitle") String cardTitle,
+                         @RequestParam("cardType") CardType cardType){
+
+
+        return "pages/start/edit";
+    }
+
+    @PostMapping("/card/update")
+    public String updateCard(Model model, Authentication authentication,
+                         @RequestParam("cardId") long cardId, @RequestParam("cardTitle") String cardTitle) throws BadRequestException {
+
+        Card card = cardRepository.findById(cardId).orElseThrow(BadRequestException::new);
+
+        if(cardBelongsToUser(card, authentication)){
+
+            // update title
+            card.setTitle(cardTitle);
+            cardRepository.save(card);
+
+            // Enrich model with page related attributes
+            Page page = pageRepository.findById(card.getPage().getId()).orElseThrow(BadRequestException::new);
+            addCardsToModel(model, authentication, page);
+            addOtherPageNamesToModel(model, authentication, page);
+
+            // Return page being edited
+            return "pages/start/edit";
+        }
+
+        return "redirect:/403";
+    }
+
+    private boolean cardBelongsToUser(Card card, Authentication authentication) {
+
+        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+
+        return card.getUser().getId() == userIdProjection.getId();
+    }
+
+    @PostMapping("/card/delete")
+    public String deleteCard(Model model, Authentication authentication,
+                             @RequestParam("cardId") long cardId){
+
+
+        return "pages/start/edit";
+    }
+
+    @PostMapping("/link/add")
+    public String addLink(Model model, Authentication authentication,
+                          @RequestParam("cardId") long cardId){
+
+
+        return "pages/start/edit";
+    }
+
+    @PostMapping("/link/update")
+    public String updateLink(Model model, Authentication authentication,
+                             @RequestParam("linkId") long linkId){
+
+        return "pages/start/edit";
+    }
+
+    @PostMapping("/link/delete")
+    public String deleteLink(Model model, Authentication authentication,
+                             @RequestParam("linkId") long linkId){
+
+        return "pages/start/edit";
+    }
+
+
+    private void addOtherPageNamesToModel(Model model, Authentication authentication, Page page) {
+
+        // Get pages based on user ID
+        User user = entityManager.getReference(User.class, page.getUser().getId());
+        List<PageNameProjection> pageNameProjections = pageRepository.findByUser(user);
+
+        // Translate to list of strings
+        List<String> pageNames = new ArrayList<>();
+        pageNameProjections.forEach(projection -> pageNames.add(projection.getName()));
+
+        // Add to model
+        model.addAttribute("pageNames", pageNames);
+    }
+
+
+    private void addCardsToModel(Model model, Authentication authentication, Page page){
 
         // Get the cards with links
         List<Card> leftColumnCards = cardRepository.findByPageAndPositionOrderByOrderNumber(page, 0);
@@ -111,38 +191,5 @@ public class StartController {
         model.addAttribute("leftColumnCards", leftColumnCards);
         model.addAttribute("middleColumnCards", middleColumnCards);
         model.addAttribute("rightColumnCards", rightColumnCards);
-
-        // Add list of page names to the model
-        List<PageNameProjection> pageNameProjections = pageRepository.findByUser(proxyUser);
-        List<String> pageNames = new ArrayList<>();
-        pageNameProjections.forEach(projection -> pageNames.add(projection.getName()));
-        model.addAttribute("pageNames", pageNames);
-
-        return page;
-    }
-
-    @GetMapping("/edit/{pageName}")
-    public String edit(Model model, Authentication authentication, @PathVariable String pageName){
-
-        // Enrich model with page related attributes
-        Page page = enrichModel(authentication, model, pageName);
-
-        // If the page name doesn't exist for the user, redirect to 404
-        if(page == null){
-            return "redirect:/404";
-        }
-
-        // TODO create an edit page: add modal for links and let both modals work - solve the 403 error
-        // and check the cardType being set correctly in the modal
-        return "pages/start/edit";
-    }
-
-    @PostMapping("/edit/{pageName}")
-    public String update(Model model, Authentication authentication, @PathVariable String pageName,
-                         @RequestParam("cardId") long cardId, @RequestParam("cardTitle") String cardTitle,
-                         @RequestParam("cardType") CardType cardType){
-
-
-        return "pages/start/edit";
     }
 }
