@@ -47,6 +47,8 @@ Add a _Before launch_ item:
 
 **Important note** is that these docker files will pull the code from git and then build that. They do **not** take 
 into account your local, non-pushed changes. If you want to run a docker from your local code, use the next option.
+Also, the docker files instruct the use of the _deployed_ profile, which assumes you'll be running behind a reverse 
+proxy. This may give issues if you're trying to access the docker directly. 
 
 
 ## Running in a local docker - from local code

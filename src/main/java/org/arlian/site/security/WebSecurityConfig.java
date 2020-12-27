@@ -14,6 +14,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         String[] unsecuredUrls = {
                 "/", "index", "/index",
+                "/privacy",
+                "/usage",
                 "/adminLTE/**",
                 "/img/**", "/favicon/**"
         };

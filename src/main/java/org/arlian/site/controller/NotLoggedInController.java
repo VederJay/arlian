@@ -8,8 +8,17 @@ public class NotLoggedInController {
 
     @GetMapping({"", "/", "index", "/index"})
     public String index(){
-        return "index";
+        return "pages/index";
     }
 
+    @GetMapping("privacy")
+    public String privacyPolicy(){
+        return "pages/privacyAndUsagePolicy";
+    }
+
+    @GetMapping("usage")
+    public String usagePolicy(){
+        return "pages/privacyAndUsagePolicy";
+    }
 
 }

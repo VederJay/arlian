@@ -23,7 +23,8 @@
     <div class="card">
         <div class="card-body login-card-body">
             <p class="login-box-msg">This site is intended for private use by the Arlian community.
-            If you have been invited or wish to become a member of this community, use the button below.</p>
+            If you have been invited or wish to become a member of this community, use the button below.
+                Review the <a th:href="${(#mvc.url('NLIC#privacyPolicy')).build()}">privacy and usage policy</a> before joining.</p>
 
             <div class="social-auth-links text-center mb-3 info-box">
                 <a th:href="@{/start}" class="btn btn-block">
