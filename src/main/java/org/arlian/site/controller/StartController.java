@@ -129,7 +129,6 @@ public class StartController {
 
         // If the page name doesn't exist for the user, redirect to 404
         if(page == null){
-            // TODO make 404 page for start
             return "redirect:/404";
         }
 
