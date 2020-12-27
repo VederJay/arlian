@@ -27,7 +27,7 @@
                 Review the <a th:href="${(#mvc.url('NLIC#privacyPolicy')).build()}">privacy and usage policy</a> before joining.</p>
 
             <div class="social-auth-links text-center mb-3 info-box">
-                <a th:href="@{/start}" class="btn btn-block">
+                <a th:href="${(#mvc.url('SC#redirectStart')).build()}" class="btn btn-block">
                     <img th:src="@{/img/btn_google_dark_normal_ios.svg}"
                          style="margin-right:10px;margin-top:3px;" /> Sign in or register using Google
                 </a>
