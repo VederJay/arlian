@@ -86,7 +86,6 @@ public class StartController {
 
         // If the page name doesn't exist for the user, redirect to 404
         if(page == null){
-            // TODO make 404 page for start
             return "redirect:/404";
         }
 
@@ -97,6 +96,10 @@ public class StartController {
         UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
         User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
         Page page = pageRepository.findByUserAndName(proxyUser, pageName);
+
+        // If the page doesn't exist, return null
+        if(page == null)
+            return null;
 
         // Get the cards with links
         List<Card> leftColumnCards = cardRepository.findByPageAndPositionOrderByOrderNumber(page, 0);
