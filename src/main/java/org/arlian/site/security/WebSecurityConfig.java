@@ -17,7 +17,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/privacy",
                 "/usage",
                 "/adminLTE/**",
-                "/img/**", "/favicon/**"
+                "/img/**", "/favicon/**", "/css/**"
         };
 
         httpSecurity

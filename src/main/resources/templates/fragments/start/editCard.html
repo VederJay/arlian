@@ -14,13 +14,26 @@
         </h5>
     </div>
     <div class="card-body">
-        <p class="card-text">
-        <ul class="list-unstyled">
-            <li th:each="link : ${card.getLinks()}">
-                <a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a>
-            </li>
-        </ul>
-        </p>
+        <table class="table table-borderless table-sm link-table">
+            <tbody>
+            <tr th:each="link : ${card.getLinks()}">
+                <td><a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a></td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            data-toggle="modal" data-target="#linkAddModal"
+                            th:data-card-id="${card.getId()}"
+                            th:data-order-number="${card.getLinks().size() + 1}">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <span style="margin-left: 10px">Add link</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+
     </div>
 </div>
 </body>

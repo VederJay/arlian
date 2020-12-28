@@ -4,6 +4,8 @@ import org.arlian.site.model.BadRequestException;
 import org.arlian.site.model.start.card.Card;
 import org.arlian.site.model.start.card.CardRepository;
 import org.arlian.site.model.start.card.CardType;
+import org.arlian.site.model.start.link.Link;
+import org.arlian.site.model.start.link.LinkRepository;
 import org.arlian.site.model.start.page.Page;
 import org.arlian.site.model.start.page.PageNameProjection;
 import org.arlian.site.model.start.page.PageRepository;
@@ -33,6 +35,7 @@ public class StartController {
     // Autowired repositories
     private final PageRepository pageRepository;
     private final CardRepository cardRepository;
+    private final LinkRepository linkRepository;
 
     // Autowired other objects
     private final EntityManager entityManager;
@@ -40,11 +43,12 @@ public class StartController {
 
     public StartController(UserService userService, PageService pageService,
                            PageRepository pageRepository, CardRepository cardRepository,
-                           EntityManager entityManager) {
+                           LinkRepository linkRepository, EntityManager entityManager) {
         this.userService = userService;
         this.pageService = pageService;
         this.pageRepository = pageRepository;
         this.cardRepository = cardRepository;
+        this.linkRepository = linkRepository;
         this.entityManager = entityManager;
     }
 
@@ -146,23 +150,46 @@ public class StartController {
     public String deleteCard(Model model, Authentication authentication,
                              @RequestParam("cardId") long cardId) throws BadRequestException {
 
-        // Find card and page
+        // Find card
         Card card = cardRepository.findById(cardId).orElseThrow(BadRequestException::new);
-        Page page = pageRepository.findById(card.getPage().getId()).orElseThrow(BadRequestException::new);
 
-        // Remove card
-        cardRepository.delete(card);
+        if(cardBelongsToUser(card, authentication)){
 
-        // Return
-        return "redirect:/start/edit/" + page.getName();
+            // Remove card
+            cardRepository.delete(card);
+
+            // Return
+            Page page = pageRepository.findById(card.getPage().getId()).orElseThrow(BadRequestException::new);
+            return "redirect:/start/edit/" + page.getName();
+        }
+
+        return "redirect:/403";
     }
 
 
     @PostMapping("/link/add")
     public String addLink(Model model, Authentication authentication,
-                          @RequestParam("cardId") long cardId){
+                          @RequestParam("cardId") long cardId, @RequestParam("linkTitle") String linkTitle,
+                          @RequestParam("linkUrl") String linkUrl) throws BadRequestException {
 
-        return "pages/start/edit";
+        // Find card
+        Card card = cardRepository.findById(cardId).orElseThrow(BadRequestException::new);
+
+        if(cardBelongsToUser(card, authentication)){
+
+            Link link = new Link(linkTitle, linkUrl);
+            card.addLink(link);
+
+            // Remove card
+            cardRepository.save(card);
+            linkRepository.save(link);
+
+            // Return
+            Page page = pageRepository.findById(card.getPage().getId()).orElseThrow(BadRequestException::new);
+            return "redirect:/start/edit/" + page.getName();
+        }
+
+        return "redirect:/403";
     }
 
     @PostMapping("/link/update")

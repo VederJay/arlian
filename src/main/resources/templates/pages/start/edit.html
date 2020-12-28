@@ -16,7 +16,7 @@
                             data-position="0">
                         <i class="fas fa-plus"></i>
                     </button>
-                    <span style="margin-left: 10px">Add</span>
+                    <span style="margin-left: 10px">Add card</span>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                             data-position="1">
                         <i class="fas fa-plus"></i>
                     </button>
-                    <span style="margin-left: 10px">Add</span>
+                    <span style="margin-left: 10px">Add card</span>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
                             data-position="2">
                         <i class="fas fa-plus"></i>
                     </button>
-                    <span style="margin-left: 10px">Add</span>
+                    <span style="margin-left: 10px">Add card</span>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@
 </div>
 <!-- /.content -->
 
-<!-- Modal for cards -->
+<!-- Modal for cards  /  EDIT -->
 <div class="modal fade" tabindex="-1" role="dialog" id="cardEditModal" aria-labelledby="cardEditModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -95,7 +95,7 @@
 </div>
 <!-- / Modal for cards  -->
 
-<!-- Modal for cards -->
+<!-- Modal for cards  /  ADD-->
 <div class="modal fade" tabindex="-1" role="dialog" id="cardAddModal" aria-labelledby="cardAddModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -107,7 +107,6 @@
             </div>
             <div class="modal-body">
                 <form role="form" method="post" id="cardAddForm" action="/start/card/add">
-                    <input type="hidden" name="cardId" id="cardId">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <input type="hidden" name="pageId" th:value="${pageId}"/>
                     <input type="hidden" name="orderNumber"/>
@@ -145,6 +144,52 @@
     </div>
 </div>
 <!-- / Modal for cards  -->
+
+<!-- Modal for links  /  ADD-->
+<div class="modal fade" tabindex="-1" role="dialog" id="linkAddModal" aria-labelledby="linkAddModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="linkAddModalLabel">Card editor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form role="form" method="post" id="linkAddForm" action="/start/link/add">
+                    <input type="hidden" name="cardId">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" name="orderNumber"/>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>Link title</label>
+                                <input type="text" class="form-control" name="linkTitle">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>Link URL</label>
+                                <input type="text" class="form-control" name="linkUrl">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" onClick="$('#linkAddForm').submit();">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / Modal for links  -->
+
 </body>
 
 
@@ -165,6 +210,14 @@
             let modal = $(this);
             modal.find("input[name='orderNumber'").val(button.data('order-number'));
             modal.find("input[name='position'").val(button.data('position'));
+        });
+
+        // Update the link add modal with values from the clicked button
+        $('#linkAddModal').on('show.bs.modal', function (event) {
+            let button = $(event.relatedTarget);
+            let modal = $(this);
+            modal.find("input[name='orderNumber'").val(button.data('order-number'));
+            modal.find("input[name='cardId'").val(button.data('card-id'));
         });
 
     </script>

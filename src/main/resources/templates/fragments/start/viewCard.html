@@ -6,13 +6,13 @@
         <h5 class="card-title m-0" th:text="${card.getTitle()}">card title</h5>
     </div>
     <div class="card-body">
-        <p class="card-text">
-        <ul class="list-unstyled">
-            <li th:each="link : ${card.getLinks()}">
-                <a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a>
-            </li>
-        </ul>
-        </p>
+        <table class="table table-borderless table-sm">
+            <tbody>
+                <tr th:each="link : ${card.getLinks()}">
+                    <td><a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 </body>
