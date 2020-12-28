@@ -1,0 +1,2 @@
+ALTER TABLE link ALTER COLUMN title TYPE varchar(255);
+ALTER TABLE link ALTER COLUMN url TYPE varchar(8192);

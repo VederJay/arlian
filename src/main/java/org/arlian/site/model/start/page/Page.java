@@ -83,6 +83,8 @@ public class Page {
      * GETTERS AND SETTERS *
      ***********************/
 
+    public long getId(){ return id; }
+
     public String getName() {
         return name;
     }

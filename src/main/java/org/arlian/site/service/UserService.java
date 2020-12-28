@@ -27,10 +27,12 @@ public class UserService {
         // If the user doesn't exist, create a new one
         if(user == null){
 
-            User newUser = new User(emailAddress,
-                    defaultOidcUser.getAttribute("given_name"),
-                    defaultOidcUser.getAttribute("name"),
-                    defaultOidcUser.getAttribute("picture"));
+            User newUser = User.builder()
+                    .emailAddress(emailAddress)
+                    .givenName(defaultOidcUser.getAttribute("given_name"))
+                    .fullName(defaultOidcUser.getAttribute("name"))
+                    .pictureUrl(defaultOidcUser.getAttribute("picture"))
+                    .build();
 
             userRepository.save(newUser);
 

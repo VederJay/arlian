@@ -1,5 +1,7 @@
 package org.arlian.site.model.user;
 
+import lombok.*;
+import org.arlian.site.model.start.card.Card;
 import org.arlian.site.model.start.page.Page;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -9,7 +11,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity @Getter
+@Setter
+@NoArgsConstructor @AllArgsConstructor @Builder
 public class User implements UserIdProjection{
 
     /**
@@ -61,65 +65,13 @@ public class User implements UserIdProjection{
     @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Page> pages = new ArrayList<>();
 
-
-
-    /****************
-     * CONSTRUCTORS *
-     ****************/
-
-    public User(){}
-
-    public User(String emailAddress, String givenName, String fullName, String pictureUrl){
-        this.emailAddress = emailAddress;
-        this.givenName = givenName;
-        this.fullName = fullName;
-        this.pictureUrl = pictureUrl;
-    }
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Card> cards = new ArrayList<>();
 
 
     /***********************
      * GETTERS AND SETTERS *
      ***********************/
-
-    public long getId() {
-        return id;
-    }
-
-    public String getGivenName() {
-        return givenName;
-    }
-
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getPictureUrl() {
-        return pictureUrl;
-    }
-
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
-    }
-
-    public List<Page> getPages() {
-        return pages;
-    }
 
     public void addPage(Page page){
         this.pages.add(page);
