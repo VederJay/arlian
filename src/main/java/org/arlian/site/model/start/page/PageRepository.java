@@ -15,4 +15,6 @@ public interface PageRepository extends JpaRepository<Page, Long> {
     Optional<Page> findByUserAndName(User user, String pageName);
 
     List<PageNameProjection> findByUser(User user);
+
+    Optional<Page> findByUserAndId(User proxyUser, Long pageId);
 }

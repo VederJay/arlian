@@ -8,14 +8,47 @@
     <div class="row">
         <div class="col-lg-3">
             <div th:each="card : ${leftColumnCards}" th:insert="~{fragments/start/editCard :: card(${card})}"/>
+            <div class="card">
+                <div class="card-body">
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            data-toggle="modal" data-target="#cardAddModal"
+                            th:data-order-number="${(leftColumnCards.size() == 0)} ? 0 : ${leftColumnCards.get(leftColumnCards.size()-1).getOrderNumber() + 1}"
+                            data-position="0">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <span style="margin-left: 10px">Add</span>
+                </div>
+            </div>
         </div>
         <!-- /.col-lg-3 -->
         <div class="col-lg-6">
             <div th:each="card : ${middleColumnCards}" th:insert="~{fragments/start/editCard :: card(${card})}"/>
+            <div class="card">
+                <div class="card-body">
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            data-toggle="modal" data-target="#cardAddModal"
+                            th:data-order-number="${(middleColumnCards.size() == 0)} ? 0 : ${middleColumnCards.get(middleColumnCards.size()-1).getOrderNumber() + 1}"
+                            data-position="1">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <span style="margin-left: 10px">Add</span>
+                </div>
+            </div>
         </div>
         <!-- /.col-lg-6 -->
         <div class="col-lg-3">
             <div th:each="card : ${rightColumnCards}" th:insert="~{fragments/start/editCard :: card(${card})}"/>
+            <div class="card">
+                <div class="card-body">
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            data-toggle="modal" data-target="#cardAddModal"
+                            th:data-order-number="${(rightColumnCards.size() == 0)} ? 0 : ${rightColumnCards.get(rightColumnCards.size()-1).getOrderNumber() + 1}"
+                            data-position="2">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <span style="margin-left: 10px">Add</span>
+                </div>
+            </div>
         </div>
         <!-- /.col-lg-3 -->
     </div>
@@ -34,17 +67,57 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form role="form" method="post" id="cardForm" action="/start/card/update">
-                    <input type="hidden" name="cardId" id="cardId">
-                    <input type="hidden"
-                           th:name="${_csrf.parameterName}"
-                           th:value="${_csrf.token}"/>
+                <form role="form" method="post" id="cardDeleteForm" action="/start/card/delete">
+                    <input type="hidden" name="cardId">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                </form>
+                <form role="form" method="post" id="cardEditForm" action="/start/card/update">
+                    <input type="hidden" name="cardId">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <div class="row">
                         <div class="col-sm-12">
                             <!-- text input -->
                             <div class="form-group">
                                 <label>Card title</label>
-                                <input type="text" class="form-control" id="cardTitle" name="cardTitle">
+                                <input type="text" class="form-control" name="cardTitle">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" style="margin-right:10%" onClick="$('#cardDeleteForm').submit();">Delete card</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" onClick="$('#cardUpdateForm').submit();">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / Modal for cards  -->
+
+<!-- Modal for cards -->
+<div class="modal fade" tabindex="-1" role="dialog" id="cardAddModal" aria-labelledby="cardAddModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cardAddModalLabel">Card editor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form role="form" method="post" id="cardAddForm" action="/start/card/add">
+                    <input type="hidden" name="cardId" id="cardId">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" name="pageId" th:value="${pageId}"/>
+                    <input type="hidden" name="orderNumber"/>
+                    <input type="hidden" name="position"/>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>Card title</label>
+                                <input type="text" class="form-control" name="cardTitle">
                             </div>
                         </div>
                     </div>
@@ -66,7 +139,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" onClick="$('#cardForm').submit();">Save changes</button>
+                <button type="submit" class="btn btn-primary" onClick="$('#cardAddForm').submit();">Save changes</button>
             </div>
         </div>
     </div>
@@ -82,9 +155,16 @@
         $('#cardEditModal').on('show.bs.modal', function (event) {
             let button = $(event.relatedTarget);
             let modal = $(this);
-            modal.find('#cardTitle').val(button.data('title'));
-            modal.find('#cardId').val(button.data('id'));
-            modal.find('#cardType').val(button.data('type'));
+            modal.find("input[name='cardTitle'").val(button.data('title'));
+            modal.find("input[name='cardId'").val(button.data('id'));
+        });
+
+        // Update the card add modal with values from the clicked button
+        $('#cardAddModal').on('show.bs.modal', function (event) {
+            let button = $(event.relatedTarget);
+            let modal = $(this);
+            modal.find("input[name='orderNumber'").val(button.data('order-number'));
+            modal.find("input[name='position'").val(button.data('position'));
         });
 
     </script>

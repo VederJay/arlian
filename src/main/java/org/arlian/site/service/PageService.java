@@ -63,7 +63,7 @@ public class PageService {
         card.setTitle("New page");
         card.setType(CardType.TEXT_LINKS);
 
-        Link link = new Link("Use 'edit mode' to start adding cards and links", "#");
+        Link link = new Link("Use 'edit mode' in the bar at the top to start adding and updating cards and links", "#");
         card.addLink(link);
         page.addCard(card);
 
@@ -78,5 +78,11 @@ public class PageService {
         UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
         User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
         return pageRepository.findByUserAndName(proxyUser, pageName);
+    }
+
+    public Optional<Page> getOptionalForPage(Authentication authentication, Long pageId) {
+        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
+        return pageRepository.findByUserAndId(proxyUser, pageId);
     }
 }

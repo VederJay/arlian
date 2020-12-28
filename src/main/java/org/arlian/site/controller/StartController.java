@@ -1,7 +1,6 @@
 package org.arlian.site.controller;
 
 import org.arlian.site.model.BadRequestException;
-import org.arlian.site.service.UserService;
 import org.arlian.site.model.start.card.Card;
 import org.arlian.site.model.start.card.CardRepository;
 import org.arlian.site.model.start.card.CardType;
@@ -11,6 +10,7 @@ import org.arlian.site.model.start.page.PageRepository;
 import org.arlian.site.model.user.User;
 import org.arlian.site.model.user.UserIdProjection;
 import org.arlian.site.service.PageService;
+import org.arlian.site.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -68,11 +68,9 @@ public class StartController {
         if(optionalPage.isEmpty())
             return "redirect:/404";
 
+        // Enrich model with page related attributes but return view page
         Page page = optionalPage.get();
-
-        addCardsToModel(model, authentication, page);
-        addOtherPageNamesToModel(model, authentication, page);
-
+        enrichModelForPage(model, authentication, page);
         return "pages/start/view";
     }
 
@@ -85,26 +83,49 @@ public class StartController {
         if(optionalPage.isEmpty())
             return "redirect:/404";
 
+        // Enrich model with page related attributes and return
         Page page = optionalPage.get();
-
-        addCardsToModel(model, authentication, page);
-        addOtherPageNamesToModel(model, authentication, page);
-
+        enrichModelForPage(model, authentication, page);
         return "pages/start/edit";
     }
 
     @PostMapping("/card/add")
-    public String addCard(Model model, Authentication authentication, @RequestParam String pageName,
-                         @RequestParam("cardId") long cardId, @RequestParam("cardTitle") String cardTitle,
+    public String addCard(Model model, Authentication authentication, @RequestParam("pageId") Long pageId,
+                         @RequestParam("cardTitle") String cardTitle, @RequestParam("position") int position,
+                         @RequestParam("orderNumber") int orderNumber,
                          @RequestParam("cardType") CardType cardType){
 
+        // Get the page
+        Optional<Page> optionalPage = pageService.getOptionalForPage(authentication, pageId);
+        if(optionalPage.isEmpty())
+            return "redirect:/404";
+        Page page = optionalPage.get();
 
+        // Get the user
+        User user = entityManager.getReference(User.class, page.getUser().getId());
+
+        // Build the card
+        Card card = Card.builder()
+                .title(cardTitle)
+                .type(cardType)
+                .page(page)
+                .position(position)
+                .orderNumber(orderNumber)
+                .user(user)
+                .build();
+
+        // save
+        cardRepository.save(card);
+
+        // return to page
+        enrichModelForPage(model, authentication, page);
         return "pages/start/edit";
     }
 
     @PostMapping("/card/update")
     public String updateCard(Model model, Authentication authentication,
-                         @RequestParam("cardId") long cardId, @RequestParam("cardTitle") String cardTitle) throws BadRequestException {
+                             @RequestParam("cardId") long cardId,
+                             @RequestParam("cardTitle") String cardTitle) throws BadRequestException {
 
         Card card = cardRepository.findById(cardId).orElseThrow(BadRequestException::new);
 
@@ -114,30 +135,28 @@ public class StartController {
             card.setTitle(cardTitle);
             cardRepository.save(card);
 
-            // Enrich model with page related attributes
+            // Enrich model with page related attributes and return
             Page page = pageRepository.findById(card.getPage().getId()).orElseThrow(BadRequestException::new);
-            addCardsToModel(model, authentication, page);
-            addOtherPageNamesToModel(model, authentication, page);
-
-            // Return page being edited
+            enrichModelForPage(model, authentication, page);
             return "pages/start/edit";
         }
 
         return "redirect:/403";
     }
 
-    private boolean cardBelongsToUser(Card card, Authentication authentication) {
-
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
-
-        return card.getUser().getId() == userIdProjection.getId();
-    }
-
     @PostMapping("/card/delete")
     public String deleteCard(Model model, Authentication authentication,
-                             @RequestParam("cardId") long cardId){
+                             @RequestParam("cardId") long cardId) throws BadRequestException {
 
+        // Find card and page
+        Card card = cardRepository.findById(cardId).orElseThrow(BadRequestException::new);
+        Page page = pageRepository.findById(card.getPage().getId()).orElseThrow(BadRequestException::new);
 
+        // Remove card
+        cardRepository.delete(card);
+
+        // Return
+        enrichModelForPage(model, authentication, page);
         return "pages/start/edit";
     }
 
@@ -161,6 +180,20 @@ public class StartController {
                              @RequestParam("linkId") long linkId){
 
         return "pages/start/edit";
+    }
+
+
+    private boolean cardBelongsToUser(Card card, Authentication authentication) {
+        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        return card.getUser().getId() == userIdProjection.getId();
+    }
+
+    private void enrichModelForPage(Model model, Authentication authentication, Page page){
+
+        // Enrich model with page related attributes
+        addCardsToModel(model, authentication, page);
+        addOtherPageNamesToModel(model, authentication, page);
+
     }
 
 
@@ -188,6 +221,7 @@ public class StartController {
 
         // Add the attributes to the model
         model.addAttribute("pageName", page.getName());
+        model.addAttribute("pageId", page.getId());
         model.addAttribute("leftColumnCards", leftColumnCards);
         model.addAttribute("middleColumnCards", middleColumnCards);
         model.addAttribute("rightColumnCards", rightColumnCards);
