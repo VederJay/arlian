@@ -118,8 +118,7 @@ public class StartController {
         cardRepository.save(card);
 
         // return to page
-        enrichModelForPage(model, authentication, page);
-        return "pages/start/edit";
+        return "redirect:/start/edit/" + page.getName();
     }
 
     @PostMapping("/card/update")
@@ -135,10 +134,9 @@ public class StartController {
             card.setTitle(cardTitle);
             cardRepository.save(card);
 
-            // Enrich model with page related attributes and return
+            // return to page
             Page page = pageRepository.findById(card.getPage().getId()).orElseThrow(BadRequestException::new);
-            enrichModelForPage(model, authentication, page);
-            return "pages/start/edit";
+            return "redirect:/start/edit/" + page.getName();
         }
 
         return "redirect:/403";
@@ -156,14 +154,13 @@ public class StartController {
         cardRepository.delete(card);
 
         // Return
-        enrichModelForPage(model, authentication, page);
-        return "pages/start/edit";
+        return "redirect:/start/edit/" + page.getName();
     }
+
 
     @PostMapping("/link/add")
     public String addLink(Model model, Authentication authentication,
                           @RequestParam("cardId") long cardId){
-
 
         return "pages/start/edit";
     }
@@ -196,7 +193,6 @@ public class StartController {
 
     }
 
-
     private void addOtherPageNamesToModel(Model model, Authentication authentication, Page page) {
 
         // Get pages based on user ID
@@ -210,7 +206,6 @@ public class StartController {
         // Add to model
         model.addAttribute("pageNames", pageNames);
     }
-
 
     private void addCardsToModel(Model model, Authentication authentication, Page page){
 
