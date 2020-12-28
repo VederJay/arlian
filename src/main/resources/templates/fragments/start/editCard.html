@@ -17,7 +17,17 @@
         <table class="table table-borderless table-sm link-table">
             <tbody>
             <tr th:each="link : ${card.getLinks()}">
-                <td><a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a></td>
+                <td>
+                    <a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a>
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            style="margin-left:10px"
+                            data-toggle="modal" data-target="#linkEditModal"
+                            th:data-link-id="${link.getId()}"
+                            th:data-title="${link.getTitle()}"
+                            th:data-url="${link.getUrl()}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
             </tr>
             <tr>
                 <td>

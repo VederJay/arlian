@@ -145,12 +145,57 @@
 </div>
 <!-- / Modal for cards  -->
 
-<!-- Modal for links  /  ADD-->
+<!-- Modal for text links  /  EDIT -->
+<div class="modal fade" tabindex="-1" role="dialog" id="linkEditModal" aria-labelledby="linkEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="linkEditModalLabel">Link editor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form role="form" method="post" id="linkEditForm" action="/start/link/update">
+                    <input type="hidden" name="linkId">
+                    <input type="hidden" name="pageId" th:value="${pageId}"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>Link title</label>
+                                <input type="text" class="form-control" name="linkTitle">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>Link URL</label>
+                                <input type="text" class="form-control" name="linkUrl">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" onClick="$('#linkEditForm').submit();">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / Modal for text links  -->
+
+<!-- Modal for text links  /  ADD-->
 <div class="modal fade" tabindex="-1" role="dialog" id="linkAddModal" aria-labelledby="linkAddModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="linkAddModalLabel">Card editor</h5>
+                <h5 class="modal-title" id="linkAddModalLabel">Link editor</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -188,8 +233,7 @@
         </div>
     </div>
 </div>
-<!-- / Modal for links  -->
-
+<!-- / Modal for text links  -->
 </body>
 
 
@@ -210,6 +254,15 @@
             let modal = $(this);
             modal.find("input[name='orderNumber'").val(button.data('order-number'));
             modal.find("input[name='position'").val(button.data('position'));
+        });
+
+        // Update the link edit modal with values from the clicked button
+        $('#linkEditModal').on('show.bs.modal', function (event) {
+            let button = $(event.relatedTarget);
+            let modal = $(this);
+            modal.find("input[name='linkId'").val(button.data('link-id'));
+            modal.find("input[name='linkTitle'").val(button.data('title'));
+            modal.find("input[name='linkUrl'").val(button.data('url'));
         });
 
         // Update the link add modal with values from the clicked button

@@ -177,7 +177,10 @@ public class StartController {
 
         if(cardBelongsToUser(card, authentication)){
 
-            Link link = new Link(linkTitle, linkUrl);
+            Link link = Link.builder()
+                    .title(linkTitle)
+                    .url(linkUrl)
+                    .build();
             card.addLink(link);
 
             // Remove card
@@ -194,7 +197,24 @@ public class StartController {
 
     @PostMapping("/link/update")
     public String updateLink(Model model, Authentication authentication,
-                             @RequestParam("linkId") long linkId){
+                             @RequestParam("linkId") long linkId,
+                             @RequestParam("pageId") long pageId,
+                             @RequestParam("linkTitle") String linkTitle,
+                             @RequestParam("linkUrl") String linkUrl) throws BadRequestException {
+
+        Link link = linkRepository.findById(linkId).orElseThrow(BadRequestException::new);
+
+        if(linkBelongsToUser(link, authentication)){
+
+            // Update and save
+            link.setTitle(linkTitle);
+            link.setUrl(linkUrl);
+            linkRepository.save(link);
+
+            // Return
+            Page page = pageRepository.findById(pageId).orElseThrow(BadRequestException::new);
+            return "redirect:/start/edit/" + page.getName();
+        }
 
         return "pages/start/edit";
     }
@@ -210,6 +230,18 @@ public class StartController {
     private boolean cardBelongsToUser(Card card, Authentication authentication) {
         UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
         return card.getUser().getId() == userIdProjection.getId();
+    }
+
+    private boolean linkBelongsToUser(Link link, Authentication authentication) {
+
+        // Check if the link is in a card
+        Optional<Card> optionalCard = cardRepository.findByLink(link);
+        if(optionalCard.isEmpty())
+            return false;
+
+        // Check if the card belongs to the user
+        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        return optionalCard.get().getUser().getId() == userIdProjection.getId();
     }
 
     private void enrichModelForPage(Model model, Authentication authentication, Page page){
