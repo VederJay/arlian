@@ -6,7 +6,7 @@
         <h5 class="card-title m-0" th:text="${card.getTitle()}">card title</h5>
     </div>
     <div class="card-body">
-        <table class="table table-borderless table-sm">
+        <table class="table table-borderless table-sm link-table">
             <tbody>
                 <tr th:each="link : ${card.getLinks()}">
                     <td><a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a></td>
