@@ -269,6 +269,41 @@ public class StartController {
 
     }
 
+    @PostMapping("/page/delete")
+    public String deletePage(Authentication authentication,
+                             @RequestParam("pageId") long pageId) throws BadRequestException {
+
+        // Check if ID exists and belongs to user
+        Optional<Page> optionalPage = pageService.getOptionalForPage(authentication, pageId);
+        if(optionalPage.isEmpty())
+            return "redirect:/404";
+
+        // Get page
+        Page page = optionalPage.get();
+        pageRepository.delete(page);
+
+        return "redirect:/start";
+    }
+
+    @PostMapping("/page/update")
+    public String updatePage(Authentication authentication,
+                             @RequestParam("pageId") long pageId,
+                             @RequestParam("pageTitle") String pageTitle) throws BadRequestException {
+
+        // Check if ID exists and belongs to user
+        Optional<Page> optionalPage = pageService.getOptionalForPage(authentication, pageId);
+        if(optionalPage.isEmpty())
+            return "redirect:/404";
+
+        // Get page and update
+        Page page = optionalPage.get();
+        page.setName(pageTitle);
+        pageRepository.save(page);
+
+        return "redirect:/start/edit/" + page.getName();
+    }
+
+
 
     private boolean cardBelongsToUser(Card card, Authentication authentication) {
         UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
