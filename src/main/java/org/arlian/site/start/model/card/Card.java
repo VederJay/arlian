@@ -1,9 +1,9 @@
-package org.arlian.site.model.start.card;
+package org.arlian.site.start.model.card;
 
 import lombok.*;
-import org.arlian.site.model.start.link.Link;
-import org.arlian.site.model.start.page.Page;
-import org.arlian.site.model.user.User;
+import org.arlian.site.start.model.link.Link;
+import org.arlian.site.start.model.page.Page;
+import org.arlian.site.user.model.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 

@@ -1,4 +1,4 @@
-package org.arlian.site.model.start.link;
+package org.arlian.site.start.model.link;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

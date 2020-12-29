@@ -1,4 +1,4 @@
-package org.arlian.site.model.start.card;
+package org.arlian.site.start.model.card;
 
 import java.util.HashMap;
 import java.util.Map;

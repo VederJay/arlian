@@ -12,10 +12,10 @@
         <div class="card-body login-card-body">
             <p class="login-box-msg">This site is intended for private use by the Arlian community.
             If you have been invited or wish to become a member of this community, use the button below.
-                Review the <a th:href="${(#mvc.url('NLIC#privacyPolicy')).build()}">privacy and usage policy</a> before joining.</p>
+                Review the <a href="/privacy">privacy and usage policy</a> before joining.</p>
 
             <div class="social-auth-links text-center mb-3 info-box">
-                <a th:href="${(#mvc.url('SC#redirectStart')).build()}" class="btn btn-block">
+                <a href="/start" class="btn btn-block">
                     <img th:src="@{/img/btn_google_dark_normal_ios.svg}"
                          style="margin-right:10px;margin-top:3px;" /> Sign in or register using Google
                 </a>

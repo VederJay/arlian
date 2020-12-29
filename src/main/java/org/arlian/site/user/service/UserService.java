@@ -1,8 +1,8 @@
-package org.arlian.site.service;
+package org.arlian.site.user.service;
 
-import org.arlian.site.model.user.User;
-import org.arlian.site.model.user.UserIdProjection;
-import org.arlian.site.model.user.UserRepository;
+import org.arlian.site.user.model.User;
+import org.arlian.site.user.model.UserIdProjection;
+import org.arlian.site.user.model.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;

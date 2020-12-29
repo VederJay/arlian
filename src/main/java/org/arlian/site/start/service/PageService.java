@@ -1,15 +1,16 @@
-package org.arlian.site.service;
+package org.arlian.site.start.service;
 
-import org.arlian.site.model.start.card.Card;
-import org.arlian.site.model.start.card.CardRepository;
-import org.arlian.site.model.start.card.CardType;
-import org.arlian.site.model.start.link.Link;
-import org.arlian.site.model.start.link.LinkRepository;
-import org.arlian.site.model.start.page.Page;
-import org.arlian.site.model.start.page.PageNameProjection;
-import org.arlian.site.model.start.page.PageRepository;
-import org.arlian.site.model.user.User;
-import org.arlian.site.model.user.UserIdProjection;
+import org.arlian.site.start.model.card.Card;
+import org.arlian.site.start.model.card.CardRepository;
+import org.arlian.site.start.model.card.CardType;
+import org.arlian.site.start.model.link.Link;
+import org.arlian.site.start.model.link.LinkRepository;
+import org.arlian.site.start.model.page.Page;
+import org.arlian.site.start.model.page.PageNameProjection;
+import org.arlian.site.start.model.page.PageRepository;
+import org.arlian.site.user.model.User;
+import org.arlian.site.user.model.UserIdProjection;
+import org.arlian.site.user.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 

@@ -1,8 +1,8 @@
-package org.arlian.site.model.user;
+package org.arlian.site.user.model;
 
 import lombok.*;
-import org.arlian.site.model.start.card.Card;
-import org.arlian.site.model.start.page.Page;
+import org.arlian.site.start.model.card.Card;
+import org.arlian.site.start.model.page.Page;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @Entity @Getter
 @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
-public class User implements UserIdProjection{
+public class User implements UserIdProjection {
 
     /**
      * Short name the user likes to be called by.

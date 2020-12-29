@@ -1,6 +1,6 @@
-package org.arlian.site.model.start.page;
+package org.arlian.site.start.model.page;
 
-import org.arlian.site.model.user.User;
+import org.arlian.site.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

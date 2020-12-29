@@ -1,4 +1,4 @@
-package org.arlian.site.model.start.page;
+package org.arlian.site.start.model.page;
 
 public interface PageNameProjection {
 
