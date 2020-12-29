@@ -239,6 +239,36 @@ public class StartController {
         return "pages/start/edit";
     }
 
+    @GetMapping("/page/add")
+    public String addPageForm(Model model, Authentication authentication){
+
+        // Get pages based on user ID
+        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        User user = entityManager.getReference(User.class, userIdProjection.getId());
+        List<PageNameProjection> pageNameProjections = pageRepository.findByUser(user);
+
+        // Translate to list of strings
+        List<String> pageNames = new ArrayList<>();
+        pageNameProjections.forEach(projection -> pageNames.add(projection.getName()));
+
+        // Add to model
+        model.addAttribute("pageNames", pageNames);
+
+        // Return page
+        return "pages/start/add";
+    }
+
+    @PostMapping("/page/add")
+    public String addPage(Authentication authentication,
+                          @RequestParam("pageTitle") String pageTitle) {
+
+        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        User user = entityManager.getReference(User.class, userIdProjection.getId());
+        Page page = pageService.createNewPage(user, pageTitle);
+        return "redirect:/start/edit/" + page.getName();
+
+    }
+
 
     private boolean cardBelongsToUser(Card card, Authentication authentication) {
         UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
@@ -261,11 +291,11 @@ public class StartController {
 
         // Enrich model with page related attributes
         addCardsToModel(model, authentication, page);
-        addOtherPageNamesToModel(model, authentication, page);
+        addOtherPageNamesToModel(model, page);
 
     }
 
-    private void addOtherPageNamesToModel(Model model, Authentication authentication, Page page) {
+    private void addOtherPageNamesToModel(Model model, Page page) {
 
         // Get pages based on user ID
         User user = entityManager.getReference(User.class, page.getUser().getId());

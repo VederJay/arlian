@@ -82,6 +82,9 @@ public class Card {
      ***********************/
 
     public void addLink(Link link){
+        if(this.links == null)
+            this.links = new ArrayList<>();
+
         this.links.add(link);
         link.setCard(this);
     }

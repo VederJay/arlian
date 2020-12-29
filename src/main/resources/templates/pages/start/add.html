@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{layouts/start :: layout (~{::body}, '', 'add', ${pageNames}, ~{::footer})}">>
+<body>
+
+<!-- Main content -->
+<div class="content">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title m-0">Add page</h5>
+                </div>
+                <div class="card-body">
+                    <form role="form" method="get" id="cancelForm" action="/start"></form>
+                    <form role="form" method="post" id="pageAddForm" action="/start/page/add">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <!-- text input -->
+                                <div class="form-group">
+                                    <label>Page title</label>
+                                    <input type="text" class="form-control" name="pageTitle">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-secondary" onClick="$('#cancelForm').submit();">Cancel</button>
+                    <button type="submit" class="btn btn-primary" onClick="$('#pageAddForm').submit();">Add page</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.content -->
+
+</body>
+
+<footer>
+</footer>
+
+</html>

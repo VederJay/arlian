@@ -58,15 +58,22 @@ public class PageService {
 
     public Page createNewPage(User user, String pageName){
 
-        Page page = new Page(user, pageName, false);
-        Card card = new Card();
-        card.setTitle("New page");
-        card.setType(CardType.TEXT_LINKS);
+        Page page = Page.builder()
+            .name(pageName)
+            .isDefault(false)
+            .user(user)
+            .build();
+
+        Card card = Card.builder()
+                .title("New page")
+                .type(CardType.TEXT_LINKS)
+                .build();
 
         Link link = Link.builder()
                 .title("Use 'edit mode' in the bar at the top to start adding and updating cards and links")
                 .url("#")
                 .build();
+
         card.addLink(link);
         page.addCard(card);
 

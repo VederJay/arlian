@@ -1,5 +1,6 @@
 package org.arlian.site.model.start.page;
 
+import lombok.*;
 import org.arlian.site.model.start.card.Card;
 import org.arlian.site.model.user.User;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,7 +11,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity @Getter
+@Setter
+@NoArgsConstructor @Builder
+@AllArgsConstructor
 public class Page {
 
     /**
@@ -65,57 +69,17 @@ public class Page {
     private List<Card> cards = new ArrayList<>();
 
 
-    /****************
-     * CONSTRUCTORS *
-     ****************/
-
-    public Page(){}
-
-    public Page(User user, String name, boolean isDefault){
-        this.name = name;
-        this.isDefault = isDefault;
-        this.user = user;
-    }
-
-
 
     /***********************
      * GETTERS AND SETTERS *
      ***********************/
 
-    public long getId(){ return id; }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Card> getCards() {
-        return cards;
-    }
-
     public void addCard(Card card) {
+        if(this.cards == null)
+            this.cards = new ArrayList<>();
         this.cards.add(card);
         card.setPage(this);
+        card.setUser(this.user);
     }
 
     public void removeCard(Card card){
