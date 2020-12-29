@@ -67,7 +67,7 @@
                             <li th:each="pageName : ${pageNames}">
                                 <a th:href="${pageName}" th:text="${pageName}" class="dropdown-item">name of page</a>
                             </li>
-                            <li><a href="#" class="dropdown-item">Create additional page</a></li>
+                            <li><a href="/start/page/add" class="dropdown-item">Create additional page</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -83,7 +83,15 @@
             <div class="container">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0 text-dark"> Your page <span style="font-style: italic" th:text="${currentPageName}"></span></h1>
+                        <h1 class="m-0 text-dark"> Your page <span style="font-style: italic" th:text="${currentPageName}"></span>
+                            <button type="button" class="btn btn-sm btn-outline-primary" th:if="${menu} == 'edit'"
+                                    style="margin-left:10px"
+                                    data-toggle="modal" data-target="#pageEditModal"
+                                    th:data-page-title="${currentPageName}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </h1>
+
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">

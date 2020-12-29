@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<body>
+
+<!-- Modal for text links  /  ADD-->
+<div class="modal fade" tabindex="-1" role="dialog" id="linkAddModal" aria-labelledby="linkAddModalLabel" aria-hidden="true" th:fragment="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="linkAddModalLabel">Link editor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form role="form" method="post" id="linkAddForm" action="/start/link/add">
+                    <input type="hidden" name="cardId">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" name="orderNumber"/>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>Link title</label>
+                                <input type="text" class="form-control" name="linkTitle">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>Link URL</label>
+                                <input type="text" class="form-control" name="linkUrl">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" onClick="$('#linkAddForm').submit();">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / Modal for text links  -->
+
+</body>
+
+<footer>
+    <script type="text/javascript" th:fragment="script">
+
+        // Update the link add modal with values from the clicked button
+        $('#linkAddModal').on('show.bs.modal', function (event) {
+            let button = $(event.relatedTarget);
+            let modal = $(this);
+            modal.find("input[name='orderNumber'").val(button.data('order-number'));
+            modal.find("input[name='cardId'").val(button.data('card-id'));
+        });
+
+    </script>
+</footer>
+
+</html>
