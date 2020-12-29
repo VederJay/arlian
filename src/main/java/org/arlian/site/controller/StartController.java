@@ -94,10 +94,10 @@ public class StartController {
     }
 
     @PostMapping("/card/add")
-    public String addCard(Model model, Authentication authentication, @RequestParam("pageId") Long pageId,
-                         @RequestParam("cardTitle") String cardTitle, @RequestParam("position") int position,
-                         @RequestParam("orderNumber") int orderNumber,
-                         @RequestParam("cardType") CardType cardType){
+    public String addCard(Authentication authentication, @RequestParam("pageId") Long pageId,
+                          @RequestParam("cardTitle") String cardTitle, @RequestParam("position") int position,
+                          @RequestParam("orderNumber") int orderNumber,
+                          @RequestParam("cardType") CardType cardType){
 
         // Get the page
         Optional<Page> optionalPage = pageService.getOptionalForPage(authentication, pageId);
@@ -126,7 +126,7 @@ public class StartController {
     }
 
     @PostMapping("/card/update")
-    public String updateCard(Model model, Authentication authentication,
+    public String updateCard(Authentication authentication,
                              @RequestParam("cardId") long cardId,
                              @RequestParam("cardTitle") String cardTitle) throws BadRequestException {
 
@@ -147,7 +147,7 @@ public class StartController {
     }
 
     @PostMapping("/card/delete")
-    public String deleteCard(Model model, Authentication authentication,
+    public String deleteCard(Authentication authentication,
                              @RequestParam("cardId") long cardId) throws BadRequestException {
 
         // Find card
@@ -168,7 +168,7 @@ public class StartController {
 
 
     @PostMapping("/link/add")
-    public String addLink(Model model, Authentication authentication,
+    public String addLink(Authentication authentication,
                           @RequestParam("cardId") long cardId, @RequestParam("linkTitle") String linkTitle,
                           @RequestParam("linkUrl") String linkUrl) throws BadRequestException {
 
@@ -177,7 +177,10 @@ public class StartController {
 
         if(cardBelongsToUser(card, authentication)){
 
-            Link link = new Link(linkTitle, linkUrl);
+            Link link = Link.builder()
+                    .title(linkTitle)
+                    .url(linkUrl)
+                    .build();
             card.addLink(link);
 
             // Remove card
@@ -193,15 +196,45 @@ public class StartController {
     }
 
     @PostMapping("/link/update")
-    public String updateLink(Model model, Authentication authentication,
-                             @RequestParam("linkId") long linkId){
+    public String updateLink(Authentication authentication,
+                             @RequestParam("linkId") long linkId,
+                             @RequestParam("pageId") long pageId,
+                             @RequestParam("linkTitle") String linkTitle,
+                             @RequestParam("linkUrl") String linkUrl) throws BadRequestException {
+
+        Link link = linkRepository.findById(linkId).orElseThrow(BadRequestException::new);
+
+        if(linkBelongsToUser(link, authentication)){
+
+            // Update and save
+            link.setTitle(linkTitle);
+            link.setUrl(linkUrl);
+            linkRepository.save(link);
+
+            // Return
+            Page page = pageRepository.findById(pageId).orElseThrow(BadRequestException::new);
+            return "redirect:/start/edit/" + page.getName();
+        }
 
         return "pages/start/edit";
     }
 
     @PostMapping("/link/delete")
-    public String deleteLink(Model model, Authentication authentication,
-                             @RequestParam("linkId") long linkId){
+    public String deleteLink(Authentication authentication,
+                             @RequestParam("linkId") long linkId,
+                             @RequestParam("pageId") long pageId) throws BadRequestException {
+
+        Link link = linkRepository.findById(linkId).orElseThrow(BadRequestException::new);
+
+        if(linkBelongsToUser(link, authentication)){
+
+            // Delete link
+            linkRepository.delete(link);
+
+            // Return
+            Page page = pageRepository.findById(pageId).orElseThrow(BadRequestException::new);
+            return "redirect:/start/edit/" + page.getName();
+        }
 
         return "pages/start/edit";
     }
@@ -210,6 +243,18 @@ public class StartController {
     private boolean cardBelongsToUser(Card card, Authentication authentication) {
         UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
         return card.getUser().getId() == userIdProjection.getId();
+    }
+
+    private boolean linkBelongsToUser(Link link, Authentication authentication) {
+
+        // Check if the link is in a card
+        Optional<Card> optionalCard = cardRepository.findByLink(link);
+        if(optionalCard.isEmpty())
+            return false;
+
+        // Check if the card belongs to the user
+        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        return optionalCard.get().getUser().getId() == userIdProjection.getId();
     }
 
     private void enrichModelForPage(Model model, Authentication authentication, Page page){

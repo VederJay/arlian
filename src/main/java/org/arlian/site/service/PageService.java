@@ -63,7 +63,10 @@ public class PageService {
         card.setTitle("New page");
         card.setType(CardType.TEXT_LINKS);
 
-        Link link = new Link("Use 'edit mode' in the bar at the top to start adding and updating cards and links", "#");
+        Link link = Link.builder()
+                .title("Use 'edit mode' in the bar at the top to start adding and updating cards and links")
+                .url("#")
+                .build();
         card.addLink(link);
         page.addCard(card);
 

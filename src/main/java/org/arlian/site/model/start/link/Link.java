@@ -1,5 +1,6 @@
 package org.arlian.site.model.start.link;
 
+import lombok.*;
 import org.arlian.site.model.start.card.Card;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -7,7 +8,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
+@Entity @Getter @Setter
+@NoArgsConstructor @Builder
+@AllArgsConstructor
 public class Link {
 
     /**
@@ -54,52 +57,4 @@ public class Link {
     @ManyToOne(fetch = FetchType.LAZY)
     private Card card;
 
-
-    /****************
-     * CONSTRUCTORS *
-     ****************/
-
-    public Link(){}
-
-    public Link(String title, String url){
-        this.title = title;
-        this.url = url;
-    }
-
-
-    /***********************
-     * GETTERS AND SETTERS *
-     ***********************/
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public int getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(int orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-    public Card getCard() {
-        return card;
-    }
-
-    public void setCard(Card card) {
-        this.card = card;
-    }
 }
