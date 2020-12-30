@@ -17,14 +17,4 @@ public class IndexController {
             return "redirect:/start";
     }
 
-    @GetMapping("privacy")
-    public String privacyPolicy(){
-        return "pages/privacyAndUsagePolicy";
-    }
-
-    @GetMapping("usage")
-    public String usagePolicy(){
-        return "pages/privacyAndUsagePolicy";
-    }
-
 }
