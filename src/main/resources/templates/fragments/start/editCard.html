@@ -14,7 +14,9 @@
         </h5>
     </div>
     <div class="card-body">
-        <table class="table table-borderless table-sm link-table">
+
+        <table th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).TEXT_LINKS}"
+               class="table table-borderless table-sm link-table">
             <tbody>
             <tr th:each="link : ${card.getLinks()}">
                 <td>
@@ -31,7 +33,8 @@
             </tr>
             <tr>
                 <td>
-                    <button type="button" class="btn btn-sm btn-outline-primary"
+                    <button th:if="${card.getType() == T(org.arlian.site.start.model.card.CardType).TEXT_LINKS}"
+                            type="button" class="btn btn-sm btn-outline-primary"
                             data-toggle="modal" data-target="#linkAddModal"
                             th:data-card-id="${card.getId()}"
                             th:data-order-number="${card.getLinks().size() + 1}">
@@ -42,6 +45,39 @@
             </tr>
             </tbody>
         </table>
+
+        <table th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}"
+               class="table table-borderless table-sm link-table">
+            <tbody>
+            <tr th:each="link : ${card.getLinks()}">
+                <td>
+                    <a th:href="${link.getUrl()}" th:title="${link.getTitle()}">
+                        <img th:src="'/start/image-link/get/' + ${link.getId()}" width="64px">
+                    </a>
+                    <button th:if="${card.getType() == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}"
+                            type="button" class="btn btn-sm btn-outline-primary"
+                            style="margin-left:10px"
+                            data-toggle="modal" data-target="#imageLinkEditModal"
+                            th:data-link-id="${link.getId()}"
+                            th:data-title="${link.getTitle()}"
+                            th:data-url="${link.getUrl()}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            data-toggle="modal" data-target="#imageLinkAddModal"
+                            th:data-card-id="${card.getId()}"
+                            th:data-order-number="${card.getLinks().size() + 1}">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <span style="margin-left: 10px">Add link</span>
+                </td>
+            </tr>
+        </table>
+
     </div>
 </div>
 </body>
