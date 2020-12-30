@@ -4,12 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class NotLoggedInController {
-
-    @GetMapping({"", "/", "index", "/index"})
-    public String index(){
-        return "pages/index";
-    }
+public class NotLoggedInPagesController {
 
     @GetMapping("privacy")
     public String privacyPolicy(){
@@ -20,5 +15,4 @@ public class NotLoggedInController {
     public String usagePolicy(){
         return "pages/privacyAndUsagePolicy";
     }
-
 }
