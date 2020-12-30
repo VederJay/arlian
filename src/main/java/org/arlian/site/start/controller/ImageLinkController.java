@@ -41,6 +41,7 @@ public class ImageLinkController {
     public String addLink(Authentication authentication,
                           @RequestParam("cardId") long cardId, @RequestParam("linkTitle") String linkTitle,
                           @RequestParam("linkUrl") String linkUrl, @RequestParam("image") MultipartFile imageFile,
+                          @RequestParam("orderNumber") int orderNumber,
                           @RequestParam("pageId") long pageId)
             throws BadRequestException, IOException {
 
@@ -48,7 +49,8 @@ public class ImageLinkController {
         Link link = Link.builder()
                 .title(linkTitle)
                 .url(linkUrl)
-                .image(imageFile.getBytes())
+                .orderNumber(orderNumber)
+                .image( (imageFile.isEmpty()) ? null : imageFile.getBytes())
                 .build();
 
         // Add it to the card
@@ -86,7 +88,7 @@ public class ImageLinkController {
         Link link = Link.builder()
                 .title(linkTitle)
                 .url(linkUrl)
-                .image( (imageFile != null) ? imageFile.getBytes() : null)
+                .image( (imageFile.isEmpty()) ? null : imageFile.getBytes())
                 .build();
 
         // Update the existing link from the new link, if authorized

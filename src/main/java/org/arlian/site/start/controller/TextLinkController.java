@@ -34,12 +34,14 @@ public class TextLinkController {
     @PostMapping("/add")
     public String addLink(Authentication authentication,
                           @RequestParam("cardId") long cardId, @RequestParam("linkTitle") String linkTitle,
-                          @RequestParam("linkUrl") String linkUrl, @RequestParam("pageId") long pageId)
+                          @RequestParam("linkUrl") String linkUrl, @RequestParam("orderNumber") int orderNumber,
+                          @RequestParam("pageId") long pageId)
             throws BadRequestException {
 
         // Create the link
         Link link = Link.builder()
                 .title(linkTitle)
+                .orderNumber(orderNumber)
                 .url(linkUrl)
                 .build();
 
