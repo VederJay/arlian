@@ -6,13 +6,21 @@
             <h5 class="card-title m-0" th:text="${card.getTitle()}">card title</h5>
         </div>
         <div class="card-body">
-            <table class="table table-borderless table-sm link-table">
+            <table th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).TEXT_LINKS}"
+                   class="table table-borderless table-sm link-table">
                 <tbody>
                     <tr th:each="link : ${card.getLinks()}">
                         <td><a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a></td>
                     </tr>
                 </tbody>
             </table>
+            <div th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}">
+                <span th:each="link : ${card.getLinks()}">
+                    <a th:href="${link.getUrl()}" th:title="${link.getTitle()}">
+                        <img th:src="'/start/image-link/get/' + ${link.getId()}" width="64px">
+                    </a>
+                </span>
+            </div>
         </div>
     </div>
 </body>

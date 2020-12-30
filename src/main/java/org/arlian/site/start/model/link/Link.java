@@ -49,6 +49,11 @@ public class Link {
      */
     private int orderNumber;
 
+    /**
+     * Image to show for the url
+     */
+    private byte[] image;
+
 
     /********************
      * RELATED ENTITIES *

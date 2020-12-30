@@ -15,10 +15,12 @@
             <div class="modal-body">
                 <form role="form" method="post" id="cardDeleteForm" action="/start/card/delete">
                     <input type="hidden" name="cardId">
+                    <input type="hidden" name="pageId" th:value="${pageId}"/>
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 </form>
                 <form role="form" method="post" id="cardEditForm" action="/start/card/update">
                     <input type="hidden" name="cardId">
+                    <input type="hidden" name="pageId" th:value="${pageId}"/>
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                     <div class="row">
                         <div class="col-sm-12">
