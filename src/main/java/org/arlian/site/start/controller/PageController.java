@@ -51,7 +51,7 @@ public class PageController {
     public String addPageForm(Model model, Authentication authentication){
 
         // Get pages based on user ID
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
         User user = entityManager.getReference(User.class, userIdProjection.getId());
         List<PageNameProjection> pageNameProjections = pageRepository.findByUser(user);
 
@@ -70,7 +70,7 @@ public class PageController {
     public String addPage(Authentication authentication,
                           @RequestParam("pageTitle") String pageTitle) {
 
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
         User user = entityManager.getReference(User.class, userIdProjection.getId());
         Page page = pageService.createNewPage(user, pageTitle);
         return "redirect:/start/edit/" + page.getName();

@@ -24,7 +24,7 @@ public class CardService {
     }
 
     public boolean cardBelongsToUser(Card card, Authentication authentication) {
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
         return card.getUser().getId() == userIdProjection.getId();
     }
 

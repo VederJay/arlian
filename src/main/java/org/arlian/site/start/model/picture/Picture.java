@@ -1,26 +1,30 @@
-package org.arlian.site.start.model.link;
+package org.arlian.site.start.model.picture;
 
 import lombok.*;
-import org.arlian.site.start.model.card.Card;
+import org.arlian.site.user.model.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity @Getter @Setter
-@NoArgsConstructor @Builder
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class Link {
+public class Picture {
 
     /**
      * Technical and meaningless ID serving as primary key in the database.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "link_id_seq")
-    @SequenceGenerator(name="link_id_seq",
-            sequenceName = "link_id_seq", allocationSize = 5)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "picture_id_seq")
+    @SequenceGenerator(name="picture_id_seq",
+            sequenceName = "picture_id_seq", allocationSize = 5)
     private long id;
+
 
     /**
      * LocalDateTime of when the object was first persisted.
@@ -34,23 +38,9 @@ public class Link {
     @UpdateTimestamp
     private LocalDateTime updateDateTime;
 
-    /**
-     * Title of the link
-     */
-    private String title;
 
     /**
-     * Url to which the link refers
-     */
-    private String url;
-
-    /**
-     * Order of the link in the card
-     */
-    private int orderNumber;
-
-    /**
-     * Image to show for the url
+     * The actual image
      */
     private byte[] image;
 
@@ -59,7 +49,9 @@ public class Link {
     // RELATED ENTITIES *
     //*******************
 
+    /**
+     * The user to which this picture belongs.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
-    private Card card;
-
+    private User user;
 }

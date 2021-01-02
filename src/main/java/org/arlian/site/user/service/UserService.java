@@ -7,17 +7,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EntityManager entityManager;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EntityManager entityManager) {
         this.userRepository = userRepository;
+        this.entityManager = entityManager;
     }
 
 
-    public UserIdProjection getUserFromAuthentication(Authentication authentication){
+    public UserIdProjection getUserIdProjectionFromAuthentication(Authentication authentication){
         DefaultOidcUser defaultOidcUser = (DefaultOidcUser) authentication.getPrincipal();
         String emailAddress = defaultOidcUser.getAttribute("email");
 
@@ -40,5 +44,10 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public User getProxyUserFromAuthentication(Authentication authentication){
+        UserIdProjection userIdProjection = getUserIdProjectionFromAuthentication(authentication);
+        return entityManager.getReference(User.class, userIdProjection.getId());
     }
 }

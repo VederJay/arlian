@@ -66,7 +66,7 @@ public class LinkService {
             return false;
 
         // Check if the card belongs to the user
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
         return optionalCard.get().getUser().getId() == userIdProjection.getId();
     }
 }
