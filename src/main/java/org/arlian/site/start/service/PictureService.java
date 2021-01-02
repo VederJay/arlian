@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class PictureService {
@@ -34,6 +35,13 @@ public class PictureService {
         List<PictureIdProjection> pictureIds = pictureRepository.findByUser(proxyUser);
         model.addAttribute("pictureIds", pictureIds);
 
+
+        Random randomizer = new Random();
+        long selectedPictureId = pictureIds
+                .get(randomizer.nextInt(pictureIds.size()))
+                .getId();
+
+        model.addAttribute("selectedPictureId", selectedPictureId);
     }
 
     public Picture getPictureIfAllowed(long pictureId, Authentication authentication)
