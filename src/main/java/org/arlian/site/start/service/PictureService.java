@@ -35,13 +35,16 @@ public class PictureService {
         List<PictureIdProjection> pictureIds = pictureRepository.findByUser(proxyUser);
         model.addAttribute("pictureIds", pictureIds);
 
+        if(pictureIds.size() > 0) {
+            Random randomizer = new Random();
+            long selectedPictureId = pictureIds
+                    .get(randomizer.nextInt(pictureIds.size()))
+                    .getId();
 
-        Random randomizer = new Random();
-        long selectedPictureId = pictureIds
-                .get(randomizer.nextInt(pictureIds.size()))
-                .getId();
-
-        model.addAttribute("selectedPictureId", selectedPictureId);
+            model.addAttribute("selectedPictureId", selectedPictureId);
+        }
+        else
+            model.addAttribute("selectedPictureId", 0);
     }
 
     public Picture getPictureIfAllowed(long pictureId, Authentication authentication)
