@@ -59,9 +59,9 @@ public class Card {
     private int orderNumber;
 
 
-    /********************
-     * RELATED ENTITIES *
-     ********************/
+    //*******************
+    // RELATED ENTITIES *
+    //*******************
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Page page;
@@ -77,9 +77,9 @@ public class Card {
     private User user;
 
 
-    /***********************
-     * GETTERS AND SETTERS *
-     ***********************/
+    //**********************
+    // GETTERS AND SETTERS *
+    //**********************
 
     public void addLink(Link link){
         if(this.links == null)

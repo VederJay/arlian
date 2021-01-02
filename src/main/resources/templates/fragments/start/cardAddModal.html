@@ -63,6 +63,20 @@
             let modal = $(this);
             modal.find("input[name='orderNumber'").val(button.data('order-number'));
             modal.find("input[name='position'").val(button.data('position'));
+            if(button.data('position')==1){
+                modal.find("select[name='cardType'")
+                    .append(
+                        $('<option>', {
+                            value: 'PICTURE_WIDGET',
+                            text: 'Picture widget'
+                        }));
+            }
+        });
+
+        // Update the card add modal to hide the picture widget option
+        $('#cardAddModal').on('hide.bs.modal', function (event) {
+            let modal = $(this);
+            modal.find("option[value='PICTURE_WIDGET'").remove();
         });
 
     </script>

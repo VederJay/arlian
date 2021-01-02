@@ -33,8 +33,7 @@
             </tr>
             <tr>
                 <td>
-                    <button th:if="${card.getType() == T(org.arlian.site.start.model.card.CardType).TEXT_LINKS}"
-                            type="button" class="btn btn-sm btn-outline-primary"
+                    <button type="button" class="btn btn-sm btn-outline-primary"
                             data-toggle="modal" data-target="#linkAddModal"
                             th:data-card-id="${card.getId()}"
                             th:data-order-number="${card.getLinks().size() + 1}">
@@ -54,8 +53,7 @@
                     <a th:href="${link.getUrl()}" th:title="${link.getTitle()}">
                         <img th:src="'/start/image-link/get/' + ${link.getId()}" width="64px">
                     </a>
-                    <button th:if="${card.getType() == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}"
-                            type="button" class="btn btn-sm btn-outline-primary"
+                    <button type="button" class="btn btn-sm btn-outline-primary"
                             style="margin-left:10px"
                             data-toggle="modal" data-target="#imageLinkEditModal"
                             th:data-link-id="${link.getId()}"
@@ -77,6 +75,26 @@
                 </td>
             </tr>
         </table>
+
+
+        <div class="row" th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).PICTURE_WIDGET}">
+            <div class="col-md-4" th:each="pictureId : ${pictureIds}">
+                <img th:src="'/start/picture/get/' + ${pictureId.getId()}" class="img-fluid">
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                        style="margin-left:10px"
+                        data-toggle="modal" data-target="#pictureDeleteModal"
+                        th:data-picture-id="${pictureId.getId()}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                        data-toggle="modal" data-target="#pictureAddModal">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <span style="margin-left: 10px">Add picture</span>
+            </div>
+        </div>
 
     </div>
 </div>

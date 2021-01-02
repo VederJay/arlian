@@ -6,6 +6,7 @@ import org.arlian.site.start.model.page.Page;
 import org.arlian.site.start.model.page.PageNameProjection;
 import org.arlian.site.start.model.page.PageRepository;
 import org.arlian.site.start.service.PageService;
+import org.arlian.site.start.service.PictureService;
 import org.arlian.site.user.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,7 @@ public class IndexViewEditController {
 
     // Autowired services
     private final PageService pageService;
+    private final PictureService pictureService;
 
     // Autowired repositories
     private final PageRepository pageRepository;
@@ -36,9 +38,11 @@ public class IndexViewEditController {
 
 
     public IndexViewEditController(PageService pageService,
-                                   PageRepository pageRepository, CardRepository cardRepository,
+                                   PictureService pictureService, PageRepository pageRepository,
+                                   CardRepository cardRepository,
                                    EntityManager entityManager) {
         this.pageService = pageService;
+        this.pictureService = pictureService;
         this.pageRepository = pageRepository;
         this.cardRepository = cardRepository;
         this.entityManager = entityManager;
@@ -87,10 +91,13 @@ public class IndexViewEditController {
         // Enrich model with page related attributes
         addCardsToModel(model, page);
         addOtherPageNamesToModel(model, page);
+        pictureService.addPictureIds(model, authentication);
 
         // Return the given template
         return template;
     }
+
+
 
     private void addOtherPageNamesToModel(Model model, Page page) {
 

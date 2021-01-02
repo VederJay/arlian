@@ -52,9 +52,10 @@ public class Page {
     private boolean isDefault;
 
 
-    /********************
-     * RELATED ENTITIES *
-     ********************/
+
+    //*******************
+    // RELATED ENTITIES *
+    //*******************
 
     /**
      * The user to which this page belongs.
@@ -70,9 +71,9 @@ public class Page {
 
 
 
-    /***********************
-     * GETTERS AND SETTERS *
-     ***********************/
+    //**********************
+    // GETTERS AND SETTERS *
+    //**********************
 
     public void addCard(Card card) {
         if(this.cards == null)

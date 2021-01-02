@@ -40,7 +40,7 @@ public class PageService {
     public String getDefaultPageName(Authentication authentication){
 
         // Using the authentication, get the page name of the default page
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
         User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
         Optional<PageNameProjection> pageNameProjection = pageRepository.findDefaultNameByUser(proxyUser);
 
@@ -86,13 +86,13 @@ public class PageService {
     }
 
     public Optional<Page> getOptionalForPage(Authentication authentication, String pageName) {
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
         User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
         return pageRepository.findByUserAndName(proxyUser, pageName);
     }
 
     public Optional<Page> getOptionalForPage(Authentication authentication, Long pageId) {
-        UserIdProjection userIdProjection = userService.getUserFromAuthentication(authentication);
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
         User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
         return pageRepository.findByUserAndId(proxyUser, pageId);
     }
