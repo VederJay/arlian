@@ -11,17 +11,26 @@
                    class="table table-borderless table-sm link-table">
                 <tbody>
                     <tr th:each="link : ${card.getLinks()}">
-                        <td><a th:href="${link.getUrl()}" th:text="${link.getTitle()}"></a></td>
+                        <td>
+                            <a th:href="${link.getUrl()}">
+                                <div th:text="${link.getTitle()}"></div>
+                            </a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
 
-            <div th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}">
-                <span th:each="link : ${card.getLinks()}">
-                    <a th:href="${link.getUrl()}" th:title="${link.getTitle()}">
-                        <img th:src="'/start/image-link/get/' + ${link.getId()}" width="64px">
-                    </a>
-                </span>
+            <div th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}" class="row">
+                <div th:each="link, linkStat : ${card.getLinks()}"
+                     th:class="${(card.getPosition != 1)}
+                            ? 'col-2 col-sm-2 col-md-2 col-lg-3 col-xl-2 image-link-col'
+                            : 'col-2 col-sm-2 col-md-2 col-lg-1 col-xl-1 image-link-col'">
+                    <div class="image-link" data-toggle="tooltip" th:title="${link.getTitle()}">
+                        <a th:href="${link.getUrl()}">
+                            <img th:src="'/start/image-link/get/' + ${link.getId()}" class="img-fluid">
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="row" th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).PICTURE_WIDGET}">

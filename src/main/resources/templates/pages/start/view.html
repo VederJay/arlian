@@ -6,25 +6,30 @@
     <!-- Main content -->
     <div class="content">
         <div class="row">
-            <div class="col-lg-3">
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
                 <div th:each="card : ${leftColumnCards}" th:insert="~{fragments/start/viewCard :: card(${card})}"/>
             </div>
-            <!-- /.col-lg-3 -->
-            <div class="col-lg-6">
+
+            <div class="col-sm-6 col-md-4 col-lg-6">
                 <div th:each="card : ${middleColumnCards}" th:insert="~{fragments/start/viewCard :: card(${card})}"/>
             </div>
-            <!-- /.col-lg-6 -->
-            <div class="col-lg-3">
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
                 <div th:each="card : ${rightColumnCards}" th:insert="~{fragments/start/viewCard :: card(${card})}"/>
             </div>
-            <!-- /.col-lg-3 -->
+
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.content -->
+
 
 </body>
 
 <footer>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 </footer>
 </html>
