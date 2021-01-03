@@ -55,6 +55,13 @@ spring:
     resources:
       cache:
         period: 2592000s
+        cachecontrol:
+          max-age: 365d
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: /**
 
 server:
   servlet:
