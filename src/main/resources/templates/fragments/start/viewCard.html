@@ -16,12 +16,13 @@
                 </tbody>
             </table>
 
-            <div th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}">
-                <span th:each="link : ${card.getLinks()}">
+            <div th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}" class="row">
+                <div th:each="link : ${card.getLinks()}"
+                     th:class="${(card.getPosition != 1)} ? 'col-2 col-sm-2 col-md-2 col-lg-3' : 'col-2 col-sm-2 col-md-2 col-lg-1 col-xl-1'">
                     <a th:href="${link.getUrl()}" th:title="${link.getTitle()}">
-                        <img th:src="'/start/image-link/get/' + ${link.getId()}" width="64px">
+                        <img th:src="'/start/image-link/get/' + ${link.getId()}" class="img-fluid">
                     </a>
-                </span>
+                </div>
             </div>
 
             <div class="row" th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).PICTURE_WIDGET}">
