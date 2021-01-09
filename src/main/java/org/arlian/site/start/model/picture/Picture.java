@@ -45,6 +45,18 @@ public class Picture {
     private byte[] image;
 
 
+    /**
+     * The thumbnail version of the image
+     */
+    private byte[] thumbnail;
+
+    /**
+     * The orientation of the image
+     */
+    private Orientation orientation;
+
+
+
     //*******************
     // RELATED ENTITIES *
     //*******************

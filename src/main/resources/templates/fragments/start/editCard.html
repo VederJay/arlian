@@ -79,7 +79,7 @@
 
         <div class="row" th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).PICTURE_WIDGET}">
             <div class="col-md-4" th:each="pictureId : ${pictureIds}">
-                <img th:src="'/start/picture/get/' + ${pictureId.getId()}" class="img-fluid">
+                <img th:src="'/start/picture/getThumbnail/' + ${pictureId.getId()}" class="img-fluid">
                 <button type="button" class="btn btn-sm btn-outline-primary"
                         style="margin-left:10px"
                         data-toggle="modal" data-target="#pictureDeleteModal"

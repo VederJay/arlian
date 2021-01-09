@@ -7,7 +7,7 @@ import org.arlian.site.start.model.page.Page;
 import org.arlian.site.start.model.page.PageRepository;
 import org.arlian.site.start.model.picture.Picture;
 import org.arlian.site.start.model.picture.PictureRepository;
-import org.arlian.site.start.service.LinkService;
+import org.arlian.site.start.service.ImageService;
 import org.arlian.site.start.service.PictureService;
 import org.arlian.site.user.service.UserService;
 import org.springframework.security.core.Authentication;
@@ -26,7 +26,7 @@ public class PictureController {
 
     // Autowired services
     private final UserService userService;
-    private final LinkService linkService;
+    private final ImageService imageService;
     private final PictureService pictureService;
 
     // Autowired repositories
@@ -34,10 +34,10 @@ public class PictureController {
     private final PictureRepository pictureRepository;
 
 
-    public PictureController(UserService userService, LinkService linkService, PictureService pictureService,
+    public PictureController(UserService userService, ImageService imageService, PictureService pictureService,
                              PictureRepository pictureRepository, PageRepository pageRepository) {
         this.userService = userService;
-        this.linkService = linkService;
+        this.imageService = imageService;
         this.pictureService = pictureService;
         this.pictureRepository = pictureRepository;
         this.pageRepository = pageRepository;
@@ -53,9 +53,12 @@ public class PictureController {
 
         // Create the picture
         Picture picture = Picture.builder()
-                .image((imageFile.isEmpty()) ? null : imageFile.getBytes())
                 .user(userService.getProxyUserFromAuthentication(authentication))
                 .build();
+
+        // Add the image
+        if(!imageFile.isEmpty())
+            imageService.addImageToPicture(picture, imageFile.getBytes());
 
         // Save it
         pictureRepository.save(picture);
@@ -65,7 +68,8 @@ public class PictureController {
         return "redirect:/start/edit/" + page.getName();
     }
 
-    @GetMapping("/get/{id}")
+
+    @GetMapping("/getFullSize/{id}")
     public void getImage(Authentication authentication, HttpServletResponse response, @PathVariable("id") long pictureId)
             throws BadRequestException, IOException {
 
@@ -76,7 +80,19 @@ public class PictureController {
         response.setContentType(contentType);
         InputStream is = new ByteArrayInputStream(picture.getImage());
         IOUtils.copy(is, response.getOutputStream());
+    }
 
+    @GetMapping("/getThumbnail/{id}")
+    public void getThumbnail(Authentication authentication, HttpServletResponse response, @PathVariable("id") long pictureId)
+            throws BadRequestException, IOException {
+
+        Picture picture = pictureService.getPictureIfAllowed(pictureId, authentication);
+
+        // Set values for response to send image
+        String contentType = new Tika().detect(picture.getThumbnail());
+        response.setContentType(contentType);
+        InputStream is = new ByteArrayInputStream(picture.getThumbnail());
+        IOUtils.copy(is, response.getOutputStream());
     }
 
 
