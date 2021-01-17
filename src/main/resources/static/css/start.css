@@ -28,3 +28,7 @@
     text-align: center;
     padding: 4px;
 }
+
+.picture-card-image {
+    border-radius: 3px;
+}

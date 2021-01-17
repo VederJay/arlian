@@ -8,6 +8,8 @@ import java.util.List;
 public interface PictureRepository extends JpaRepository<Picture, Long> {
 
 
-    List<PictureIdProjection> findByUser(User proxyUser);
+    List<PictureIdAndOrientationProjection> findByUser(User proxyUser);
+    List<PictureIdAndOrientationProjection> findByUserAndOrientation(User proxyUser, Orientation orientation);
+
 
 }
