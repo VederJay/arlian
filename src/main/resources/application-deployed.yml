@@ -1,2 +1,5 @@
 server:
   forward-headers-strategy: native
+  servlet:
+    session:
+      timeout: 600m
