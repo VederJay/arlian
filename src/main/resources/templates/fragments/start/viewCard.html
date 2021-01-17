@@ -34,11 +34,11 @@
             </div>
 
             <div class="row" th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).PICTURE_WIDGET}">
-                <div class="col-md-6" th:if="${selectedPictureId2 != 0}">
+                <div class="col-md-12 col-lg-6" th:if="${selectedPictureId2 != 0}">
                     <img th:src="'/start/picture/getFullSize/' + ${selectedPictureId1}"
                          class="img-fluid picture-card-image">
                 </div>
-                <div class="col-md-6 hidden-xs" th:if="${selectedPictureId2 != 0}">
+                <div class="col-lg-6 d-none d-lg-block" th:if="${selectedPictureId2 != 0}">
                     <img th:src="'/start/picture/getFullSize/' + ${selectedPictureId2}"
                          class="img-fluid picture-card-image">
                 </div>
