@@ -1,4 +1,4 @@
-FROM openjdk:11 as builder
+FROM openjdk:11-oracle as builder
 WORKDIR application
 
 RUN apk update && apk upgrade
