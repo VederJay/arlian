@@ -3,6 +3,7 @@ package org.arlian.site.user.model;
 import lombok.*;
 import org.arlian.site.start.model.card.Card;
 import org.arlian.site.start.model.page.Page;
+import org.arlian.site.start.model.settings.Settings;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -67,6 +68,10 @@ public class User implements UserIdProjection {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Card> cards = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
+    private Settings settings;
 
 
     /***********************
