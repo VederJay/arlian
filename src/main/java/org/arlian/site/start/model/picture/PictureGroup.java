@@ -9,21 +9,22 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class Picture {
+public class PictureGroup {
 
     /**
      * Technical and meaningless ID serving as primary key in the database.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "picture_id_seq")
-    @SequenceGenerator(name="picture_id_seq",
-            sequenceName = "picture_id_seq", allocationSize = 5)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "picture_group_id_seq")
+    @SequenceGenerator(name="picture_group_id_seq",
+            sequenceName = "picture_group_id_seq", allocationSize = 5)
     private long id;
 
 
@@ -40,32 +41,13 @@ public class Picture {
     private LocalDateTime updateDateTime;
 
 
-    /**
-     * The actual image
-     */
-    private byte[] image;
+    /********************
+     * RELATED ENTITIES *
+     ********************/
 
+    @OneToMany(mappedBy = "pictureGroup", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<UserPictureGroupLink> userPictureGroupLinks;
 
-    /**
-     * The thumbnail version of the image
-     */
-    private byte[] thumbnail;
-
-    /**
-     * The orientation of the image
-     */
-    private Orientation orientation;
-
-
-
-    //*******************
-    // RELATED ENTITIES *
-    //*******************
-
-
-    /**
-     * The picture group to which this picture belongs.
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private PictureGroup pictureGroup;
+    @OneToMany(mappedBy = "pictureGroup", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Picture> pictures;
 }
