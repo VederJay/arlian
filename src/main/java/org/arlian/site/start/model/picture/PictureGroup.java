@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -46,8 +47,14 @@ public class PictureGroup {
      ********************/
 
     @OneToMany(mappedBy = "pictureGroup", orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<UserPictureGroupLink> userPictureGroupLinks;
+    @Builder.Default
+    private List<UserPictureGroupLink> userPictureGroupLinks = new ArrayList<>();
 
     @OneToMany(mappedBy = "pictureGroup", orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Picture> pictures;
+    @Builder.Default
+    private List<Picture> pictures = new ArrayList<>();
+
+    public void addUserPictureGroupLink(UserPictureGroupLink userPictureGroupLink) {
+        userPictureGroupLinks.add(userPictureGroupLink);
+    }
 }

@@ -1,10 +1,7 @@
 package org.arlian.site.start.service;
 
 import org.arlian.site.generic.model.BadRequestException;
-import org.arlian.site.start.model.picture.Orientation;
-import org.arlian.site.start.model.picture.Picture;
-import org.arlian.site.start.model.picture.PictureIdAndOrientationProjection;
-import org.arlian.site.start.model.picture.PictureRepository;
+import org.arlian.site.start.model.picture.*;
 import org.arlian.site.user.model.User;
 import org.arlian.site.user.model.UserIdProjection;
 import org.arlian.site.user.service.UserService;
@@ -95,7 +92,13 @@ public class PictureService {
 
     private boolean pictureBelongsToUser(Picture picture, Authentication authentication) {
         UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
-        return picture.getUser().getId() == userIdProjection.getId();
+        for (UserPictureGroupLink userPictureGroupLink : picture.getPictureGroup().getUserPictureGroupLinks()) {
+            if (userPictureGroupLink.getRole().equals(UserPictureGroupRole.OWNS) ||
+                    userPictureGroupLink.getRole().equals(UserPictureGroupRole.SHARES))
+                if (userPictureGroupLink.getUser().getId() == userIdProjection.getId())
+                    return true;
+        }
+        return false;
     }
 
     public void deleteLinkIfAllowed(long pictureId, Authentication authentication) throws BadRequestException {
