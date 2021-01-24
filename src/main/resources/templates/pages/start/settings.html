@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{layouts/start :: layout (~{::body}, ${pageName}, 'view', ${pageNames}, ~{::footer})}">
+<body>
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="row">
+
+            <div class="col-md-12">
+                <p>Hello world of settings.</p>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+
+<footer>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+</footer>
+</html>

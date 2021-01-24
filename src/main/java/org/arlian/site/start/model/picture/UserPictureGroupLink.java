@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.arlian.site.user.model.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,15 +16,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class Picture {
+public class UserPictureGroupLink {
 
     /**
      * Technical and meaningless ID serving as primary key in the database.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "picture_id_seq")
-    @SequenceGenerator(name="picture_id_seq",
-            sequenceName = "picture_id_seq", allocationSize = 5)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_picture_group_link_id_seq")
+    @SequenceGenerator(name="user_picture_group_link_id_seq",
+            sequenceName = "user_picture_group_link_id_seq", allocationSize = 5)
     private long id;
 
 
@@ -40,32 +41,25 @@ public class Picture {
     private LocalDateTime updateDateTime;
 
 
-    /**
-     * The actual image
-     */
-    private byte[] image;
-
-
-    /**
-     * The thumbnail version of the image
-     */
-    private byte[] thumbnail;
-
-    /**
-     * The orientation of the image
-     */
-    private Orientation orientation;
-
-
-
     //*******************
     // RELATED ENTITIES *
     //*******************
 
+    /**
+     * The user in the link.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     /**
-     * The picture group to which this picture belongs.
+     * The role the user has with respect to the picture group.
+     */
+    private UserPictureGroupRole role;
+
+    /**
+     * The picture group in the link.
      */
     @ManyToOne(fetch = FetchType.LAZY)
     private PictureGroup pictureGroup;
+
 }

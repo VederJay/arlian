@@ -50,4 +50,5 @@ public class UserService {
         UserIdProjection userIdProjection = getUserIdProjectionFromAuthentication(authentication);
         return entityManager.getReference(User.class, userIdProjection.getId());
     }
+
 }

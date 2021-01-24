@@ -1,12 +1,13 @@
 package org.arlian.site.start.model.picture;
 
-public enum Orientation {
-    HORIZONTAL("H"),
-    VERTICAL("V");
+public enum UserPictureGroupRole {
+    OWNS("O"),
+    INVITED_TO_SHARE("I"),
+    SHARES("S");
 
     private String code;
 
-    private Orientation(String code) {
+    private UserPictureGroupRole(String code) {
         this.code = code;
     }
 
