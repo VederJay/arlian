@@ -34,17 +34,20 @@ public class PictureController {
     private final PageRepository pageRepository;
     private final PictureRepository pictureRepository;
     private final PictureGroupRepository pictureGroupRepository;
+    private final UserPictureGroupLinkRepository userPictureGroupLinkRepository;
 
 
     public PictureController(UserService userService, ImageService imageService, PictureService pictureService,
                              PictureRepository pictureRepository, PageRepository pageRepository,
-                             PictureGroupRepository pictureGroupRepository) {
+                             PictureGroupRepository pictureGroupRepository,
+                             UserPictureGroupLinkRepository userPictureGroupLinkRepository) {
         this.userService = userService;
         this.imageService = imageService;
         this.pictureService = pictureService;
         this.pictureRepository = pictureRepository;
         this.pageRepository = pageRepository;
         this.pictureGroupRepository = pictureGroupRepository;
+        this.userPictureGroupLinkRepository = userPictureGroupLinkRepository;
     }
 
 
@@ -66,6 +69,8 @@ public class PictureController {
                     .role(UserPictureGroupRole.OWNS)
                     .build();
             pictureGroup.addUserPictureGroupLink(userPictureGroupLink);
+            pictureGroupRepository.save(pictureGroup);
+            userPictureGroupLinkRepository.save(userPictureGroupLink);
         }
         else
             pictureGroup = pictureGroupOptional.get();
@@ -105,7 +110,7 @@ public class PictureController {
     public void getThumbnail(Authentication authentication, HttpServletResponse response, @PathVariable("id") long pictureId)
             throws BadRequestException, IOException {
 
-        Picture picture = pictureService.getPictureIfAllowed(pictureId, authentication);
+        Picture picture = pictureService.getPictureIfOwned(pictureId, authentication);
 
         // Set values for response to send image
         String contentType = new Tika().detect(picture.getThumbnail());

@@ -32,7 +32,7 @@ SELECT setval('picture_group_id_seq', (SELECT max(id) FROM picture_group));
 -- add a user picture group link for every user that has pictures and update the sequence
 INSERT INTO user_picture_group_link (id, create_date_time, update_date_time, user_id, picture_group_id, role)
 SELECT id, now(), now(), id, id, 'O' FROM picture_group;
-SELECT setval('picture_group_id_seq', (SELECT max(id) FROM user_picture_group_link));
+SELECT setval('user_picture_group_link_id_seq', (SELECT max(id) FROM user_picture_group_link));
 
 
 ALTER TABLE "picture" ADD COLUMN "picture_group_id" bigint NULL;

@@ -22,9 +22,9 @@ public class UserPictureGroupLink {
      * Technical and meaningless ID serving as primary key in the database.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "upgl_id_seq")
-    @SequenceGenerator(name="upgl_id_seq",
-            sequenceName = "upgl_id_seq", allocationSize = 5)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_picture_group_link_id_seq")
+    @SequenceGenerator(name="user_picture_group_link_id_seq",
+            sequenceName = "user_picture_group_link_id_seq", allocationSize = 5)
     private long id;
 
 

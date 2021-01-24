@@ -34,15 +34,32 @@ public class PictureService {
         User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
 
         // Get the pictures for the user
-        List<PictureIdAndOrientationProjection> horizontalPictureProjections = pictureRepository
-                .findByUserAndOrientation(proxyUser, Orientation.HORIZONTAL);
-        List<PictureIdAndOrientationProjection> verticalPictureProjections = pictureRepository
-                .findByUserAndOrientation(proxyUser, Orientation.VERTICAL);
+        List<PictureIdAndOrientationProjection> horizontalPictureProjections = new ArrayList<>();
+        List<PictureIdAndOrientationProjection> ownedHorizontalPictureProjections = pictureRepository
+                .findByUserAndOrientationAndRole(proxyUser, Orientation.HORIZONTAL, UserPictureGroupRole.OWNS);
+        List<PictureIdAndOrientationProjection> sharedHorizontalPictureProjections = pictureRepository
+                .findByUserAndOrientationAndRole(proxyUser, Orientation.HORIZONTAL, UserPictureGroupRole.SHARES);
+        horizontalPictureProjections.addAll(ownedHorizontalPictureProjections);
+        horizontalPictureProjections.addAll(sharedHorizontalPictureProjections);
+
+        List<PictureIdAndOrientationProjection> verticalPictureProjections = new ArrayList<>();
+        List<PictureIdAndOrientationProjection> ownedVerticalPictureProjections = pictureRepository
+                .findByUserAndOrientationAndRole(proxyUser, Orientation.VERTICAL, UserPictureGroupRole.OWNS);
+        List<PictureIdAndOrientationProjection> sharedVerticalPictureProjections = pictureRepository
+                .findByUserAndOrientationAndRole(proxyUser, Orientation.VERTICAL, UserPictureGroupRole.SHARES);
+        verticalPictureProjections.addAll(ownedVerticalPictureProjections);
+        verticalPictureProjections.addAll(sharedVerticalPictureProjections);
+
 
         // Prepare a collection of all pictures
         List<PictureIdAndOrientationProjection> allPictureProjections = new ArrayList<>();
         allPictureProjections.addAll(horizontalPictureProjections);
         allPictureProjections.addAll(verticalPictureProjections);
+
+        // Prepare a collection of all owned pictures
+        List<PictureIdAndOrientationProjection> ownedPictureProjections = new ArrayList<>();
+        ownedPictureProjections.addAll(ownedHorizontalPictureProjections);
+        ownedPictureProjections.addAll(ownedVerticalPictureProjections);
 
         // Select a picture or set thereof
         long selectedPictureId1 = 0;
@@ -74,7 +91,7 @@ public class PictureService {
         }
 
         // Add all data to the model
-        model.addAttribute("pictureIds", allPictureProjections);
+        model.addAttribute("pictureIds", ownedPictureProjections);
         model.addAttribute("selectedPictureId1", selectedPictureId1);
         model.addAttribute("selectedPictureId2", selectedPictureId2);
     }
@@ -82,9 +99,9 @@ public class PictureService {
     public Picture getPictureIfAllowed(long pictureId, Authentication authentication)
             throws BadRequestException {
 
-        Picture picture = pictureRepository.findById(pictureId).orElseThrow(BadRequestException::new);
+        Picture picture = pictureRepository.findByIdWithGroups(pictureId).orElseThrow(BadRequestException::new);
 
-        if(pictureBelongsToUser(picture, authentication))
+        if(pictureCanBeSeenByUser(picture, authentication))
             return picture;
         else
             throw new BadRequestException();
@@ -92,6 +109,18 @@ public class PictureService {
 
     private boolean pictureBelongsToUser(Picture picture, Authentication authentication) {
         UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
+
+        for (UserPictureGroupLink userPictureGroupLink : picture.getPictureGroup().getUserPictureGroupLinks()) {
+            if (userPictureGroupLink.getRole().equals(UserPictureGroupRole.OWNS))
+                if (userPictureGroupLink.getUser().getId() == userIdProjection.getId())
+                    return true;
+        }
+        return false;
+    }
+
+    private boolean pictureCanBeSeenByUser(Picture picture, Authentication authentication) {
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
+
         for (UserPictureGroupLink userPictureGroupLink : picture.getPictureGroup().getUserPictureGroupLinks()) {
             if (userPictureGroupLink.getRole().equals(UserPictureGroupRole.OWNS) ||
                     userPictureGroupLink.getRole().equals(UserPictureGroupRole.SHARES))
@@ -103,7 +132,16 @@ public class PictureService {
 
     public void deleteLinkIfAllowed(long pictureId, Authentication authentication) throws BadRequestException {
 
-        Picture picture = getPictureIfAllowed(pictureId, authentication);
+        Picture picture = getPictureIfOwned(pictureId, authentication);
         pictureRepository.delete(picture);
+    }
+
+    public Picture getPictureIfOwned(long pictureId, Authentication authentication) throws BadRequestException {
+        Picture picture = pictureRepository.findByIdWithGroups(pictureId).orElseThrow(BadRequestException::new);
+
+        if(pictureBelongsToUser(picture, authentication))
+            return picture;
+        else
+            throw new BadRequestException();
     }
 }
