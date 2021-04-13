@@ -3,6 +3,7 @@ package org.arlian.site.start.service;
 import org.arlian.site.generic.model.BadRequestException;
 import org.arlian.site.start.model.card.Card;
 import org.arlian.site.start.model.card.CardRepository;
+import org.arlian.site.start.model.link.ImageLinkThumbnail;
 import org.arlian.site.start.model.link.Link;
 import org.arlian.site.start.model.link.LinkRepository;
 import org.arlian.site.user.model.UserIdProjection;
@@ -42,6 +43,8 @@ public class LinkService {
         link.setUrl(updatedLink.getUrl());
         if(updatedLink.getImage() != null)
             link.setImage(updatedLink.getImage());
+        if(updatedLink.getThumbnail() != null)
+            link.setThumbnail(updatedLink.getThumbnail());
 
         // save
         linkRepository.save(link);
@@ -52,21 +55,32 @@ public class LinkService {
 
         Link link = linkRepository.findById(linkId).orElseThrow(BadRequestException::new);
 
-        if(linkBelongsToUser(link, authentication))
+        if(linkBelongsToUser(link.getId(), authentication))
             return link;
         else
             throw new BadRequestException();
     }
 
-    private boolean linkBelongsToUser(Link link, Authentication authentication) {
+    private boolean linkBelongsToUser(long linkId, Authentication authentication) {
 
         // Check if the link is in a card
-        Optional<Card> optionalCard = cardRepository.findByLink(link);
+        Optional<Card> optionalCard = cardRepository.findByLinkId(linkId);
         if(optionalCard.isEmpty())
             return false;
 
         // Check if the card belongs to the user
         UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
         return optionalCard.get().getUser().getId() == userIdProjection.getId();
+    }
+
+    public ImageLinkThumbnail getLinkThumbnailIfAllowed(long linkId, Authentication authentication)
+            throws BadRequestException {
+
+        ImageLinkThumbnail link = linkRepository.findThumbnailById(linkId).orElseThrow(BadRequestException::new);
+
+        if(linkBelongsToUser(link.getId(), authentication))
+            return link;
+        else
+            throw new BadRequestException();
     }
 }

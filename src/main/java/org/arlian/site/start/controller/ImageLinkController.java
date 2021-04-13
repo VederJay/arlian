@@ -5,6 +5,7 @@ import org.apache.commons.imaging.ImageWriteException;
 import org.apache.tika.Tika;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.arlian.site.generic.model.BadRequestException;
+import org.arlian.site.start.model.link.ImageLinkThumbnail;
 import org.arlian.site.start.model.link.Link;
 import org.arlian.site.start.model.link.LinkRepository;
 import org.arlian.site.start.model.page.Page;
@@ -12,7 +13,6 @@ import org.arlian.site.start.model.page.PageRepository;
 import org.arlian.site.start.service.CardService;
 import org.arlian.site.start.service.ImageService;
 import org.arlian.site.start.service.LinkService;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -36,17 +36,14 @@ public class ImageLinkController {
     private final PageRepository pageRepository;
     private final LinkRepository linkRepository;
 
-    private final ResourceLoader resourceLoader;
-
 
     public ImageLinkController(CardService cardService, LinkService linkService, ImageService imageService,
-                               PageRepository pageRepository, LinkRepository linkRepository, ResourceLoader resourceLoader) {
+                               PageRepository pageRepository, LinkRepository linkRepository) {
         this.cardService = cardService;
         this.linkService = linkService;
         this.imageService = imageService;
         this.pageRepository = pageRepository;
         this.linkRepository = linkRepository;
-        this.resourceLoader = resourceLoader;
     }
 
 
@@ -84,10 +81,11 @@ public class ImageLinkController {
     public void getImage(Authentication authentication, HttpServletResponse response, @PathVariable("id") long linkId)
             throws BadRequestException, IOException {
 
-        Link link = linkService.getLinkIfAllowed(linkId, authentication);
-        String contentType = new Tika().detect(link.getThumbnail());
+        ImageLinkThumbnail imageLinkThumbnail = linkService.getLinkThumbnailIfAllowed(linkId, authentication);
+
+        String contentType = new Tika().detect(imageLinkThumbnail.getThumbnail());
         response.setContentType(contentType);
-        InputStream is = new ByteArrayInputStream(link.getThumbnail());
+        InputStream is = new ByteArrayInputStream(imageLinkThumbnail.getThumbnail());
         IOUtils.copy(is, response.getOutputStream());
     }
 
@@ -97,15 +95,19 @@ public class ImageLinkController {
                              @RequestParam("pageId") long pageId,
                              @RequestParam("linkTitle") String linkTitle,
                              @RequestParam("linkUrl") String linkUrl,
-                             @RequestParam("image") MultipartFile imageFile) throws BadRequestException, IOException {
+                             @RequestParam("image") MultipartFile imageFile)
+            throws BadRequestException, IOException, ImageWriteException, ImageReadException {
 
 
         // Build a new link with updated values
         Link link = Link.builder()
                 .title(linkTitle)
                 .url(linkUrl)
-                .image( (imageFile.isEmpty()) ? null : imageFile.getBytes())
                 .build();
+
+        // Add the image
+        if(!imageFile.isEmpty())
+            imageService.addImageToLink(link, imageFile.getBytes());
 
         // Update the existing link from the new link, if authorized
         linkService.updateLinkWithLinkIfAllowed(linkId, link, authentication);
