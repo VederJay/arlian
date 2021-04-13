@@ -1,5 +1,7 @@
 package org.arlian.site.start.controller;
 
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.ImageWriteException;
 import org.apache.tika.Tika;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.arlian.site.generic.model.BadRequestException;
@@ -55,7 +57,7 @@ public class PictureController {
     public String addLink(Authentication authentication,
                           @RequestParam("image") MultipartFile imageFile,
                           @RequestParam("pageId") long pageId)
-            throws BadRequestException, IOException {
+            throws BadRequestException, IOException, ImageWriteException, ImageReadException {
 
         // Find owned picture group for user
         User user = userService.getProxyUserFromAuthentication(authentication);

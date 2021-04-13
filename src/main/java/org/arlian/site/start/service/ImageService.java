@@ -1,23 +1,38 @@
 package org.arlian.site.start.service;
 
+import org.apache.commons.imaging.ImageFormats;
+import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.ImageWriteException;
+import org.apache.commons.imaging.Imaging;
+import org.arlian.site.start.model.link.Link;
 import org.arlian.site.start.model.picture.Orientation;
 import org.arlian.site.start.model.picture.Picture;
+import org.imgscalr.Scalr;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 public class ImageService {
 
-    public void addImageToPicture(Picture picture, byte[] originalImage){
+    private final ResourceLoader resourceLoader;
+
+    public ImageService(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
+
+    public void addImageToPicture(Picture picture, byte[] originalImageBytes) throws IOException, ImageReadException, ImageWriteException {
+
+        // add original image
+        picture.setImage(originalImageBytes);
 
         // get the image & characteristics
-        BufferedImage bufferedImage = createImageFromBytes(originalImage);
+        BufferedImage bufferedImage = getBufferedImageFromBytes(originalImageBytes);
+        assert bufferedImage != null;
         int height = bufferedImage.getHeight();
         int width = bufferedImage.getWidth();
 
@@ -27,82 +42,62 @@ public class ImageService {
         else
             picture.setOrientation(Orientation.HORIZONTAL);
 
-        // create thumbnail
-        BufferedImage thumbnailImage = createScaledImage(bufferedImage, 200.0, 300.0);
-        picture.setThumbnail(getBytes(thumbnailImage));
+        // create and set thumbnail
+        byte[] thumbnailImageBytes = getThumbnailImageBytes(originalImageBytes, 200, 300);
+        picture.setThumbnail(thumbnailImageBytes);
+
+    }
+
+    public void addImageToLink(Link link, byte[] originalImageBytes) throws IOException, ImageWriteException, ImageReadException {
 
         // add original image
-        picture.setImage(originalImage);
+        link.setImage(originalImageBytes);
+
+        // add thumbnail image
+        byte[] thumbnailImageBytes = getThumbnailImageBytes(originalImageBytes, 128, 128);
+        link.setThumbnail(thumbnailImageBytes);
     }
 
-    public BufferedImage createScaledImage(BufferedImage bufferedImage, double maxHeight, double maxWidth){
+    private byte[] getThumbnailImageBytes(byte[] originalImageBytes, int maxWidth, int maxHeight)
+            throws IOException, ImageReadException, ImageWriteException {
+        BufferedImage bufferedImage = getBufferedImageFromBytes(originalImageBytes);
+        assert bufferedImage != null;
 
-        // determine width and height
-        int height = bufferedImage.getHeight();
-        int width = bufferedImage.getWidth();
+        // create thumbnail if picture larger than required for thumbnail
+        if (bufferedImage.getWidth() > maxWidth || bufferedImage.getHeight() > maxHeight) {
+            BufferedImage thumbnailImage = createScaledImage(bufferedImage, maxHeight, maxWidth);
+            return Imaging.writeImageToBytes(thumbnailImage, ImageFormats.PNG, null);
+        }
 
-        // determine necessary scaling for thumbnail
-        double heightReductionFactor = height / maxHeight;
-        double widthReductionFactor = width / maxWidth;
-        double reductionFactor = Math.max(heightReductionFactor, widthReductionFactor);
+        // use picture itself as thumbnail if it's smaller
+        else
+            return originalImageBytes;
 
+    }
+
+    private BufferedImage getBufferedImageFromBytes(byte[] originalImageBytes) throws IOException, ImageReadException {
+        BufferedImage bufferedImage;
+
+        // Read the given bytes as an image
+        try {
+            bufferedImage = Imaging.getBufferedImage(originalImageBytes);
+        }
+
+        // If the bytes can't be read as an image (they're svg or a non-image file type), then use the default
+        catch (ImageReadException imageReadException){
+            Resource resource = resourceLoader.getResource("classpath:static/img/no-image-available-icon.jpg");
+            InputStream is = resource.getInputStream();
+            byte[] imageNotAvailableBytes = is.readAllBytes();
+            is.close();
+            bufferedImage = Imaging.getBufferedImage(imageNotAvailableBytes);
+        }
+
+        return bufferedImage;
+    }
+
+    private BufferedImage createScaledImage(BufferedImage bufferedImage, int maxHeight, int maxWidth){
         // create scaled image
-        Image scaledImage = bufferedImage.getScaledInstance(
-                (int) Math.floor(width / reductionFactor),
-                (int) Math.floor(height / reductionFactor),
-                Image.SCALE_SMOOTH);
-        BufferedImage scaledBufferedImage = toBufferedImage(scaledImage);
-
-        // return
-        return scaledBufferedImage;
-    }
-
-    public byte[] getBytes(BufferedImage bufferedImage){
-        try {
-            return toByteArray(bufferedImage, "jpg");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public BufferedImage createImageFromBytes(byte[] imageData) {
-        ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
-        try {
-            return ImageIO.read(bais);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public BufferedImage toBufferedImage(Image img)
-    {
-        if (img instanceof BufferedImage)
-        {
-            return (BufferedImage) img;
-        }
-
-        // Create a buffered image with transparency
-        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
-
-        // Draw the image on to the buffered image
-        Graphics2D bGr = bimage.createGraphics();
-        bGr.drawImage(img, 0, 0, null);
-        bGr.dispose();
-
-        // Return the buffered image
-        return bimage;
-    }
-
-    public byte[] toByteArray(BufferedImage bi, String format)
-            throws IOException {
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(bi, format, baos);
-        baos.flush();
-        byte[] bytes = baos.toByteArray();
-        baos.close();
-        return bytes;
-
+        return Scalr.resize(bufferedImage, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.AUTOMATIC,
+                maxWidth, maxHeight);
     }
 }
