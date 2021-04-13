@@ -51,7 +51,7 @@
             <tr th:each="link : ${card.getLinks()}">
                 <td>
                     <a th:href="${link.getUrl()}" th:title="${link.getTitle()}">
-                        <img th:src="'/start/image-link/get/' + ${link.getId()}" width="64px">
+                        <img th:src="'/start/image-link/getImage/' + ${link.getId()}" width="64px">
                     </a>
                     <button type="button" class="btn btn-sm btn-outline-primary"
                             style="margin-left:10px"

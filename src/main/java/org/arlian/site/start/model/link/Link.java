@@ -54,6 +54,11 @@ public class Link {
      */
     private byte[] image;
 
+    /**
+     * The thumbnail version of the image
+     */
+    private byte[] thumbnail;
+
 
     //*******************
     // RELATED ENTITIES *
