@@ -99,12 +99,12 @@ public class PictureController {
     public void getImage(Authentication authentication, HttpServletResponse response, @PathVariable("id") long pictureId)
             throws BadRequestException, IOException {
 
-        Picture picture = pictureService.getPictureIfAllowed(pictureId, authentication);
+        ReducedImagePicture picture = pictureService.getReducedPictureIfAllowed(pictureId, authentication);
 
         // Set values for response to send image
-        String contentType = new Tika().detect(picture.getImage());
+        String contentType = new Tika().detect(picture.getReducedImage());
         response.setContentType(contentType);
-        InputStream is = new ByteArrayInputStream(picture.getImage());
+        InputStream is = new ByteArrayInputStream(picture.getReducedImage());
         IOUtils.copy(is, response.getOutputStream());
     }
 

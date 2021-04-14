@@ -28,7 +28,7 @@ public class ImageService {
     public void addImageToPicture(Picture picture, byte[] originalImageBytes) throws IOException, ImageReadException, ImageWriteException {
 
         // add original image
-        picture.setImage(originalImageBytes);
+        picture.setOriginalImage(originalImageBytes);
 
         // get the image & characteristics
         BufferedImage bufferedImage = getBufferedImageFromBytes(originalImageBytes);
@@ -37,10 +37,16 @@ public class ImageService {
         int width = bufferedImage.getWidth();
 
         // set the orientation
-        if (height > width)
+        if (height > width) {
             picture.setOrientation(Orientation.VERTICAL);
-        else
+            byte[] reducedImageBytes = getThumbnailImageBytes(originalImageBytes, 500, 800);
+            picture.setReducedImage(reducedImageBytes);
+        }
+        else {
             picture.setOrientation(Orientation.HORIZONTAL);
+            byte[] reducedImageBytes = getThumbnailImageBytes(originalImageBytes, 900, 800);
+            picture.setReducedImage(reducedImageBytes);
+        }
 
         // create and set thumbnail
         byte[] thumbnailImageBytes = getThumbnailImageBytes(originalImageBytes, 200, 300);

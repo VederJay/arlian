@@ -43,7 +43,13 @@ public class Picture {
     /**
      * The actual image
      */
-    private byte[] image;
+    private byte[] originalImage;
+
+
+    /**
+     * The actual image - reduced in size for viewing
+     */
+    private byte[] reducedImage;
 
 
     /**

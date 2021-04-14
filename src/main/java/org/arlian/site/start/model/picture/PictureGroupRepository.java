@@ -12,4 +12,5 @@ public interface PictureGroupRepository extends JpaRepository<PictureGroup, Long
             "on link.role = org.arlian.site.start.model.picture.UserPictureGroupRole.OWNS " +
             "and link.user = ?1")
     Optional<PictureGroup> findOwnedByUser(User proxyUserFromAuthentication);
+
 }

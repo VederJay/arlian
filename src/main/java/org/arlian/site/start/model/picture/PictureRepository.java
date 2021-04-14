@@ -29,4 +29,6 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
             "on links.user = ?1 and links.role = ?3 " +
             "WHERE pic.orientation = ?2 ")
     List<PictureIdAndOrientationProjection> findByUserAndOrientationAndRole(User proxyUser, Orientation horizontal, UserPictureGroupRole owns);
+
+    <T> Optional<T> findById(long pictureId, Class<T> type);
 }

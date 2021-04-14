@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -20,11 +21,15 @@ public class PictureService {
     private final UserService userService;
     private final EntityManager entityManager;
     private final PictureRepository pictureRepository;
+    private final UserPictureGroupLinkRepository userPictureGroupLinkRepository;
 
-    public PictureService(UserService userService, EntityManager entityManager, PictureRepository pictureRepository) {
+    public PictureService(UserService userService, EntityManager entityManager, PictureRepository pictureRepository,
+                          UserPictureGroupLinkRepository userPictureGroupLinkRepository) {
         this.userService = userService;
         this.entityManager = entityManager;
         this.pictureRepository = pictureRepository;
+
+        this.userPictureGroupLinkRepository = userPictureGroupLinkRepository;
     }
 
     public void addPictureIds(Model model, Authentication authentication) {
@@ -96,10 +101,11 @@ public class PictureService {
         model.addAttribute("selectedPictureId2", selectedPictureId2);
     }
 
-    public Picture getPictureIfAllowed(long pictureId, Authentication authentication)
+    public ReducedImagePicture getReducedPictureIfAllowed(long pictureId, Authentication authentication)
             throws BadRequestException {
 
-        Picture picture = pictureRepository.findByIdWithGroups(pictureId).orElseThrow(BadRequestException::new);
+        ReducedImagePicture picture = pictureRepository.findById(pictureId, ReducedImagePicture.class)
+                .orElseThrow(BadRequestException::new);
 
         if(pictureCanBeSeenByUser(picture, authentication))
             return picture;
@@ -107,23 +113,24 @@ public class PictureService {
             throw new BadRequestException();
     }
 
+    private boolean pictureCanBeSeenByUser(ReducedImagePicture picture, Authentication authentication) {
+
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
+
+        long userId = userIdProjection.getId();
+        long pictureGroupId = picture.getPictureGroup().getId();
+
+        Optional<UserPictureGroupLink> userPictureGroupLinkOptional = userPictureGroupLinkRepository
+                .pictureGroupIdAndUserIdViewableMatch(pictureGroupId, userId);
+
+        return userPictureGroupLinkOptional.isPresent();
+    }
+
     private boolean pictureBelongsToUser(Picture picture, Authentication authentication) {
         UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
 
         for (UserPictureGroupLink userPictureGroupLink : picture.getPictureGroup().getUserPictureGroupLinks()) {
             if (userPictureGroupLink.getRole().equals(UserPictureGroupRole.OWNS))
-                if (userPictureGroupLink.getUser().getId() == userIdProjection.getId())
-                    return true;
-        }
-        return false;
-    }
-
-    private boolean pictureCanBeSeenByUser(Picture picture, Authentication authentication) {
-        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
-
-        for (UserPictureGroupLink userPictureGroupLink : picture.getPictureGroup().getUserPictureGroupLinks()) {
-            if (userPictureGroupLink.getRole().equals(UserPictureGroupRole.OWNS) ||
-                    userPictureGroupLink.getRole().equals(UserPictureGroupRole.SHARES))
                 if (userPictureGroupLink.getUser().getId() == userIdProjection.getId())
                     return true;
         }
