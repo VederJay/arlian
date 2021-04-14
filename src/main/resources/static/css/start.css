@@ -35,7 +35,8 @@
 
 .picture-thumbnail-image {
     position: relative;
-    top: 0;
+    top: 50%;
+    transform: translateY(-50%);
     left: 0;
     z-index: 5;
     filter: grayscale(90%) brightness(150%) contrast(100%);
