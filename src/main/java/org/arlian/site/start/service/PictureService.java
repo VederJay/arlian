@@ -32,7 +32,7 @@ public class PictureService {
         this.userPictureGroupLinkRepository = userPictureGroupLinkRepository;
     }
 
-    public void addPictureIds(Model model, Authentication authentication) {
+    public void addPictureIdsToModel(Model model, Authentication authentication) {
 
         // Get a proxy of the user
         UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
@@ -104,26 +104,42 @@ public class PictureService {
     public ReducedImagePicture getReducedPictureIfAllowed(long pictureId, Authentication authentication)
             throws BadRequestException {
 
+        // Get picture projection
         ReducedImagePicture picture = pictureRepository.findById(pictureId, ReducedImagePicture.class)
                 .orElseThrow(BadRequestException::new);
 
-        if(pictureCanBeSeenByUser(picture, authentication))
+        // Match with user
+        UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
+        long userId = userIdProjection.getId();
+        long pictureGroupId = picture.getPictureGroup().getId();
+        Optional<UserPictureGroupLink> userPictureGroupLinkOptional = userPictureGroupLinkRepository
+                .pictureGroupIdAndUserIdViewableMatch(pictureGroupId, userId);
+
+        // Return if viewable
+        if(userPictureGroupLinkOptional.isPresent())
             return picture;
         else
             throw new BadRequestException();
     }
 
-    private boolean pictureCanBeSeenByUser(ReducedImagePicture picture, Authentication authentication) {
+    public ThumbnailPicture getThumbnailPictureIfOwned(long pictureId, Authentication authentication) throws BadRequestException {
 
+        // Get picture projection
+        ThumbnailPicture picture = pictureRepository.findById(pictureId, ThumbnailPicture.class)
+                .orElseThrow(BadRequestException::new);
+
+        // Match with owner
         UserIdProjection userIdProjection = userService.getUserIdProjectionFromAuthentication(authentication);
-
         long userId = userIdProjection.getId();
         long pictureGroupId = picture.getPictureGroup().getId();
-
         Optional<UserPictureGroupLink> userPictureGroupLinkOptional = userPictureGroupLinkRepository
-                .pictureGroupIdAndUserIdViewableMatch(pictureGroupId, userId);
+                .pictureGroupIdAndUserIdOwnerMatch(pictureGroupId, userId);
 
-        return userPictureGroupLinkOptional.isPresent();
+        // Return if owned
+        if(userPictureGroupLinkOptional.isPresent())
+            return picture;
+        else
+            throw new BadRequestException();
     }
 
     private boolean pictureBelongsToUser(Picture picture, Authentication authentication) {
@@ -137,7 +153,7 @@ public class PictureService {
         return false;
     }
 
-    public void deleteLinkIfAllowed(long pictureId, Authentication authentication) throws BadRequestException {
+    public void deletePictureIfAllowed(long pictureId, Authentication authentication) throws BadRequestException {
 
         Picture picture = getPictureIfOwned(pictureId, authentication);
         pictureRepository.delete(picture);
@@ -151,4 +167,6 @@ public class PictureService {
         else
             throw new BadRequestException();
     }
+
+
 }

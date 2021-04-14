@@ -54,9 +54,9 @@ public class PictureController {
 
 
     @PostMapping("/add")
-    public String addLink(Authentication authentication,
-                          @RequestParam("image") MultipartFile imageFile,
-                          @RequestParam("pageId") long pageId)
+    public String addPicture(Authentication authentication,
+                             @RequestParam("image") MultipartFile imageFile,
+                             @RequestParam("pageId") long pageId)
             throws BadRequestException, IOException, ImageWriteException, ImageReadException {
 
         // Find owned picture group for user
@@ -96,7 +96,7 @@ public class PictureController {
 
 
     @GetMapping("/getFullSize/{id}")
-    public void getImage(Authentication authentication, HttpServletResponse response, @PathVariable("id") long pictureId)
+    public void getReducedImage(Authentication authentication, HttpServletResponse response, @PathVariable("id") long pictureId)
             throws BadRequestException, IOException {
 
         ReducedImagePicture picture = pictureService.getReducedPictureIfAllowed(pictureId, authentication);
@@ -112,7 +112,7 @@ public class PictureController {
     public void getThumbnail(Authentication authentication, HttpServletResponse response, @PathVariable("id") long pictureId)
             throws BadRequestException, IOException {
 
-        Picture picture = pictureService.getPictureIfOwned(pictureId, authentication);
+        ThumbnailPicture picture = pictureService.getThumbnailPictureIfOwned(pictureId, authentication);
 
         // Set values for response to send image
         String contentType = new Tika().detect(picture.getThumbnail());
@@ -123,12 +123,12 @@ public class PictureController {
 
 
     @PostMapping("/delete")
-    public String deleteLink(Authentication authentication,
-                             @RequestParam("pictureId") long pictureId,
-                             @RequestParam("pageId") long pageId) throws BadRequestException {
+    public String deletePicture(Authentication authentication,
+                                @RequestParam("pictureId") long pictureId,
+                                @RequestParam("pageId") long pageId) throws BadRequestException {
 
         // Deletes the link if the user owns it
-        pictureService.deleteLinkIfAllowed(pictureId, authentication);
+        pictureService.deletePictureIfAllowed(pictureId, authentication);
 
         // Return
         Page page = pageRepository.findById(pageId).orElseThrow(BadRequestException::new);

@@ -91,7 +91,7 @@ public class IndexViewEditController {
         // Enrich model with page related attributes
         addCardsToModel(model, page);
         addOtherPageNamesToModel(model, page);
-        pictureService.addPictureIds(model, authentication);
+        pictureService.addPictureIdsToModel(model, authentication);
 
         // Return the given template
         return template;
