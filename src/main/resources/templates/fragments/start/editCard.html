@@ -78,21 +78,20 @@
 
 
         <div class="row" th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).PICTURE_WIDGET}">
-            <div class="col-md-4" th:each="pictureId : ${pictureIds}">
-                <img th:src="'/start/picture/getThumbnail/' + ${pictureId.getId()}" class="img-fluid">
-                <button type="button" class="btn btn-sm btn-outline-primary"
-                        style="margin-left:10px"
+            <div class="col-md-4">
+                <button type="button" class="btn btn-sm btn-primary btn-delete-center-hover"
+                        data-toggle="modal" data-target="#pictureAddModal">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <div style="position:absolute;left:0;top:20%;width:100%;text-align:center;font-style:italic">Add picture</div>
+            </div>
+            <div class="col-md-4" th:each="pictureId : ${pictureIds}" style="text-align:center">
+                <button type="button" class="btn btn-sm btn-primary btn-delete-center-hover"
                         data-toggle="modal" data-target="#pictureDeleteModal"
                         th:data-picture-id="${pictureId.getId()}">
                     <i class="fas fa-trash"></i>
                 </button>
-            </div>
-            <div class="col-md-4">
-                <button type="button" class="btn btn-sm btn-outline-primary"
-                        data-toggle="modal" data-target="#pictureAddModal">
-                    <i class="fas fa-plus"></i>
-                </button>
-                <span style="margin-left: 10px">Add picture</span>
+                <img th:src="'/start/picture/getThumbnail/' + ${pictureId.getId()}" class="img-fluid picture-thumbnail-image">
             </div>
         </div>
 

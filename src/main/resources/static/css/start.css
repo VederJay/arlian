@@ -32,3 +32,22 @@
 .picture-card-image {
     border-radius: 3px;
 }
+
+.picture-thumbnail-image {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    z-index: 5;
+    filter: grayscale(90%) brightness(150%) contrast(100%);
+    margin-top:5px;
+    margin-bottom:5px;
+    border:1px solid grey;
+}
+
+.btn-delete-center-hover {
+    position: absolute;
+    z-index: 10;
+    top: calc(50% - 15px);
+    left: calc(50% - 15px);
+}

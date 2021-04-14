@@ -49,7 +49,7 @@ public class ImageService {
         }
 
         // create and set thumbnail
-        byte[] thumbnailImageBytes = getThumbnailImageBytes(originalImageBytes, 200, 300);
+        byte[] thumbnailImageBytes = getThumbnailImageBytes(originalImageBytes, 300, 220);
         picture.setThumbnail(thumbnailImageBytes);
 
     }
@@ -103,7 +103,7 @@ public class ImageService {
 
     private BufferedImage createScaledImage(BufferedImage bufferedImage, int maxHeight, int maxWidth){
         // create scaled image
-        return Scalr.resize(bufferedImage, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.AUTOMATIC,
+        return Scalr.resize(bufferedImage, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_HEIGHT,
                 maxWidth, maxHeight);
     }
 }
