@@ -1,5 +1,6 @@
 package org.arlian.site.start.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.arlian.site.generic.model.BadRequestException;
 import org.arlian.site.start.model.picture.*;
 import org.arlian.site.user.model.User;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
+@Slf4j
 public class PictureService {
 
     private final UserService userService;
@@ -39,66 +41,65 @@ public class PictureService {
         User proxyUser = entityManager.getReference(User.class, userIdProjection.getId());
 
         // Get the pictures for the user
-        List<PictureIdAndOrientationProjection> horizontalPictureProjections = new ArrayList<>();
-        List<PictureIdAndOrientationProjection> ownedHorizontalPictureProjections = pictureRepository
+        List<Long> horizontalPictureIds = new ArrayList<>();
+        List<Long> ownedHorizontalPictureIds = pictureRepository
                 .findByUserAndOrientationAndRole(proxyUser, Orientation.HORIZONTAL, UserPictureGroupRole.OWNS);
-        List<PictureIdAndOrientationProjection> sharedHorizontalPictureProjections = pictureRepository
+        List<Long> sharedHorizontalPictureIds = pictureRepository
                 .findByUserAndOrientationAndRole(proxyUser, Orientation.HORIZONTAL, UserPictureGroupRole.SHARES);
-        horizontalPictureProjections.addAll(ownedHorizontalPictureProjections);
-        horizontalPictureProjections.addAll(sharedHorizontalPictureProjections);
+        horizontalPictureIds.addAll(ownedHorizontalPictureIds);
+        horizontalPictureIds.addAll(sharedHorizontalPictureIds);
 
-        List<PictureIdAndOrientationProjection> verticalPictureProjections = new ArrayList<>();
-        List<PictureIdAndOrientationProjection> ownedVerticalPictureProjections = pictureRepository
+        List<Long> verticalPictureIds = new ArrayList<>();
+        List<Long> ownedVerticalPictureIds = pictureRepository
                 .findByUserAndOrientationAndRole(proxyUser, Orientation.VERTICAL, UserPictureGroupRole.OWNS);
-        List<PictureIdAndOrientationProjection> sharedVerticalPictureProjections = pictureRepository
+        List<Long> sharedVerticalPictureIds = pictureRepository
                 .findByUserAndOrientationAndRole(proxyUser, Orientation.VERTICAL, UserPictureGroupRole.SHARES);
-        verticalPictureProjections.addAll(ownedVerticalPictureProjections);
-        verticalPictureProjections.addAll(sharedVerticalPictureProjections);
+        verticalPictureIds.addAll(ownedVerticalPictureIds);
+        verticalPictureIds.addAll(sharedVerticalPictureIds);
 
 
         // Prepare a collection of all pictures
-        List<PictureIdAndOrientationProjection> allPictureProjections = new ArrayList<>();
-        allPictureProjections.addAll(horizontalPictureProjections);
-        allPictureProjections.addAll(verticalPictureProjections);
+        List<Long> allViewablePictureIds = new ArrayList<>();
+        allViewablePictureIds.addAll(horizontalPictureIds);
+        allViewablePictureIds.addAll(verticalPictureIds);
 
         // Prepare a collection of all owned pictures
-        List<PictureIdAndOrientationProjection> ownedPictureProjections = new ArrayList<>();
-        ownedPictureProjections.addAll(ownedHorizontalPictureProjections);
-        ownedPictureProjections.addAll(ownedVerticalPictureProjections);
+        List<Long> allOwnedPictureIds = new ArrayList<>();
+        allOwnedPictureIds.addAll(ownedHorizontalPictureIds);
+        allOwnedPictureIds.addAll(ownedVerticalPictureIds);
 
         // Select a picture or set thereof
         long selectedPictureId1 = 0;
         long selectedPictureId2 = 0;
         // if there's 2 or more vertical pictures, we can pick any random picture and if it's vertical, we'll have
         // a second one to set next to it
-        if(verticalPictureProjections.size() >= 2){
+        if(verticalPictureIds.size() >= 2){
 
             // pick a first picture
             Random randomizer = new Random();
-            PictureIdAndOrientationProjection selectedProjection1 = allPictureProjections
-                    .get(randomizer.nextInt(allPictureProjections.size()));
-            selectedPictureId1 = selectedProjection1.getId();
+            selectedPictureId1 = allViewablePictureIds
+                    .get(randomizer.nextInt(allViewablePictureIds.size()));
 
             // if vertical, pick a second vertical one
-            if(selectedProjection1.getOrientation() == Orientation.VERTICAL){
-                verticalPictureProjections.remove(selectedProjection1);
-                PictureIdAndOrientationProjection selectedProjection2 = verticalPictureProjections
-                        .get(randomizer.nextInt(verticalPictureProjections.size()));
-                selectedPictureId2 = selectedProjection2.getId();
+            if(verticalPictureIds.contains(selectedPictureId1)){
+                verticalPictureIds.remove(selectedPictureId1);
+                selectedPictureId2 = verticalPictureIds
+                        .get(randomizer.nextInt(verticalPictureIds.size()));
             }
         }
         // if there's insufficient vertical pictures, pick a horizontal one (if there's one)
-        else if(horizontalPictureProjections.size() > 0){
+        else if(horizontalPictureIds.size() > 0){
             Random randomizer = new Random();
-            PictureIdAndOrientationProjection selectedProjection1 = horizontalPictureProjections
-                    .get(randomizer.nextInt(horizontalPictureProjections.size()));
-            selectedPictureId1 = selectedProjection1.getId();
+            selectedPictureId1 = horizontalPictureIds
+                    .get(randomizer.nextInt(horizontalPictureIds.size()));
         }
 
         // Add all data to the model
-        model.addAttribute("pictureIds", ownedPictureProjections);
+        model.addAttribute("pictureIds", allOwnedPictureIds);
         model.addAttribute("selectedPictureId1", selectedPictureId1);
         model.addAttribute("selectedPictureId2", selectedPictureId2);
+
+        log.info("End 'addPictureIdsToModel'-method");
     }
 
     public ReducedImagePicture getReducedPictureIfAllowed(long pictureId, Authentication authentication)
