@@ -24,11 +24,12 @@ public interface PictureRepository extends JpaRepository<Picture, Long> {
             "WHERE pic.id = ?1")
     Optional<Picture> findByIdWithGroups(long pictureId);
 
-    @Query("SELECT pic FROM Picture pic " +
-            "INNER JOIN pic.pictureGroup picGroup INNER JOIN picGroup.userPictureGroupLinks links " +
+    @Query("SELECT pic.id FROM Picture pic " +
+            "INNER JOIN pic.pictureGroup picGroup " +
+            "INNER JOIN picGroup.userPictureGroupLinks links " +
             "on links.user = ?1 and links.role = ?3 " +
             "WHERE pic.orientation = ?2 ")
-    List<PictureIdAndOrientationProjection> findByUserAndOrientationAndRole(User proxyUser, Orientation horizontal, UserPictureGroupRole owns);
+    List<Long> findByUserAndOrientationAndRole(User proxyUser, Orientation horizontal, UserPictureGroupRole owns);
 
     <T> Optional<T> findById(long pictureId, Class<T> type);
 }

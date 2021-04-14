@@ -1,5 +1,6 @@
 package org.arlian.site.start.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.arlian.site.start.model.card.Card;
 import org.arlian.site.start.model.card.CardRepository;
 import org.arlian.site.start.model.page.Page;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+@Slf4j
 @RequestMapping("/start")
 public class IndexViewEditController {
 

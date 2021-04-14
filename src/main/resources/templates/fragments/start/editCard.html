@@ -88,10 +88,10 @@
             <div class="col-md-4" th:each="pictureId : ${pictureIds}" style="text-align:center">
                 <button type="button" class="btn btn-sm btn-primary btn-delete-center-hover"
                         data-toggle="modal" data-target="#pictureDeleteModal"
-                        th:data-picture-id="${pictureId.getId()}">
+                        th:data-picture-id="${pictureId}">
                     <i class="fas fa-trash"></i>
                 </button>
-                <img th:src="'/start/picture/getThumbnail/' + ${pictureId.getId()}" class="img-fluid picture-thumbnail-image">
+                <img th:src="'/start/picture/getThumbnail/' + ${pictureId}" class="img-fluid picture-thumbnail-image">
             </div>
         </div>
 
