@@ -45,48 +45,49 @@
             </tbody>
         </table>
 
-        <table th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}"
-               class="table table-borderless table-sm link-table">
-            <tbody>
-            <tr th:each="link : ${card.getLinks()}">
-                <td>
-                    <a th:href="${link.getUrl()}" th:title="${link.getTitle()}">
-                        <img th:src="'/start/image-link/getImage/' + ${link.getId()}" width="64px">
-                    </a>
-                    <button type="button" class="btn btn-sm btn-outline-primary"
-                            style="margin-left:10px"
+
+        <div th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).IMAGE_LINKS}" class="row">
+            <div th:each="link, linkStat : ${card.getLinks()}"
+                 th:class="${(card.getPosition != 1)}
+                            ? 'col-2 col-sm-2 col-md-2 col-lg-3 col-xl-2 image-link-col'
+                            : 'col-2 col-sm-2 col-md-2 col-lg-1 col-xl-1 image-link-col'">
+                <div class="image-link" data-toggle="tooltip" th:title="${link.getTitle()}">
+
+                    <button type="button" class="btn btn-sm btn-primary btn-left-top"
                             data-toggle="modal" data-target="#imageLinkEditModal"
                             th:data-link-id="${link.getId()}"
                             th:data-title="${link.getTitle()}"
                             th:data-url="${link.getUrl()}">
                         <i class="fas fa-edit"></i>
                     </button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button type="button" class="btn btn-sm btn-outline-primary"
-                            data-toggle="modal" data-target="#imageLinkAddModal"
-                            th:data-card-id="${card.getId()}"
-                            th:data-order-number="${card.getLinks().size() + 1}">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                    <span style="margin-left: 10px">Add link</span>
-                </td>
-            </tr>
-        </table>
+
+                    <img th:src="'/start/image-link/getImage/' + ${link.getId()}" class="img-fluid link-edit-image">
+
+                </div>
+            </div>
+            <div th:class="${(card.getPosition != 1)}
+                            ? 'col-2 col-sm-2 col-md-2 col-lg-3 col-xl-2 image-link-col'
+                            : 'col-2 col-sm-2 col-md-2 col-lg-1 col-xl-1 image-link-col'">
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                         data-toggle="modal" data-target="#imageLinkAddModal"
+                         th:data-card-id="${card.getId()}"
+                         th:data-order-number="${card.getLinks().size() + 1}">
+                <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
 
 
         <div class="row" th:if="${card.getType == T(org.arlian.site.start.model.card.CardType).PICTURE_WIDGET}">
             <div class="col-md-4">
-                <button type="button" class="btn btn-sm btn-primary btn-delete-center-hover"
+                <button type="button" class="btn btn-sm btn-primary btn-center-hover"
                         data-toggle="modal" data-target="#pictureAddModal">
                     <i class="fas fa-plus"></i>
                 </button>
                 <div style="position:absolute;left:0;top:20%;width:100%;text-align:center;font-style:italic">Add picture</div>
             </div>
             <div class="col-md-4" th:each="pictureId : ${pictureIds}" style="text-align:center">
-                <button type="button" class="btn btn-sm btn-primary btn-delete-center-hover"
+                <button type="button" class="btn btn-sm btn-primary btn-center-hover"
                         data-toggle="modal" data-target="#pictureDeleteModal"
                         th:data-picture-id="${pictureId}">
                     <i class="fas fa-trash"></i>

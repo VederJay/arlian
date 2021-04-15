@@ -99,7 +99,6 @@ public class PictureService {
         model.addAttribute("selectedPictureId1", selectedPictureId1);
         model.addAttribute("selectedPictureId2", selectedPictureId2);
 
-        log.info("End 'addPictureIdsToModel'-method");
     }
 
     public ReducedImagePicture getReducedPictureIfAllowed(long pictureId, Authentication authentication)

@@ -45,7 +45,22 @@
     border:1px solid grey;
 }
 
-.btn-delete-center-hover {
+.link-edit-image{
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    z-index: 5;
+}
+
+.btn-left-top {
+    position: absolute;
+    z-index: 10;
+    top: 5px;
+    left: 5px;
+}
+
+.btn-center-hover {
     position: absolute;
     z-index: 10;
     top: calc(50% - 15px);
